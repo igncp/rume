@@ -77,7 +77,7 @@ release:
 	-DCMAKE_BUILD_TYPE=Release \
 	-DBUILD_MERGED_PLUGINS=OFF \
 	-DENABLE_EXTERNAL_PLUGINS=ON
-	cmake --build $(build)
+	cmake --build $(build) -j 1
 
 merged-plugins:
 	cmake . -B$(build) \
