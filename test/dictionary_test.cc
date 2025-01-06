@@ -101,3 +101,8 @@ TEST_F(RimeDictionaryTest, ScriptLookup) {
   EXPECT_EQ(9, e3->text.length());
   EXPECT_FALSE(d7.Next());
 }
+
+// Confirmed that this blocks the build if asserting `false`
+TEST_F(RimeDictionaryTest, DummyTest) {
+  ASSERT_TRUE(true);
+}

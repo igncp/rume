@@ -94,7 +94,7 @@ debug:
 	-DBUILD_MERGED_PLUGINS=OFF \
 	-DALSO_LOG_TO_STDERR=ON \
 	-DENABLE_EXTERNAL_PLUGINS=ON
-	cmake --build $(build)
+	cmake --build $(build) -j 1
 
 install:
 	cmake --build $(build) --target install
