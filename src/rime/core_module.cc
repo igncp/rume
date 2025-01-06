@@ -18,6 +18,7 @@ using namespace rime;
 
 static void rime_core_initialize() {
   LOG(INFO) << "registering core components.";
+  LOG(INFO) << "this is a custom log to confirm the correct library is used.";
   Registry& r = Registry::instance();
 
   auto config_builder =
