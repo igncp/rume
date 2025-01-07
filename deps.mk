@@ -10,7 +10,7 @@ endif
 build ?= build
 prefix ?= $(rime_root)
 
-rime_deps = glog googletest leveldb marisa-trie opencc yaml-cpp
+rime_deps = glog googletest leveldb marisa-trie opencc yaml-cpp rume
 
 .PHONY: all clean clean-dist clean-src $(rime_deps)
 
@@ -29,7 +29,8 @@ clean-dist:
 clean-src:
 	for dep in $(rime_deps); do \
 		rm -r $(src_dir)/$${dep}/$(build) || true; \
-	done
+	done \
+	&& rm -r $(src_dir)/rume/target || true
 
 glog:
 	cd $(src_dir)/glog; \
@@ -82,3 +83,9 @@ yaml-cpp:
 	-DCMAKE_BUILD_TYPE:STRING="Release" \
 	-DCMAKE_INSTALL_PREFIX:PATH="$(prefix)" \
 	&& cmake --build $(build) --target install
+
+rume:
+	cd $(src_dir)/rume; \
+	cargo build --release && \
+	cp target/release/librume.a $(prefix)/lib/ && \
+	cp rume.h $(prefix)/include/;

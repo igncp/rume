@@ -7,7 +7,6 @@ include/*
 lib/*
 bin/*
 share/*
-deps/*/*
 plugins/*/
 env.bat
 node_modules/
@@ -18,3 +17,6 @@ node_modules/
 .DS_Store
 deps/*.tar.xz
 version-info.txt
+
+/target
+/deps/boost-1.84.0/

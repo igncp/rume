@@ -43,10 +43,17 @@ if(ENABLE_EXTERNAL_PLUGINS)
   set(rime_optional_deps ${rime_optional_deps} dl)
 endif()
 
+find_library(Rume_LIBRARY NAMES rume)
+
+if(NOT Rume_LIBRARY)
+  message(FATAL_ERROR "Could not find the rume library")
+endif()
+
 set(rime_core_deps
     ${Boost_LIBRARIES}
     ${Glog_LIBRARY}
     ${YamlCpp_LIBRARY}
+    ${Rume_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${rime_optional_deps})
 set(rime_dict_deps
