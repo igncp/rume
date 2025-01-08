@@ -24,7 +24,7 @@ using namespace rime;
 static void rime_core_initialize() {
   LOG(INFO) << "registering core components.";
   char *s = NULL;
-  get_some_cstr(&s);
+  rume_get_init_str(&s);
   LOG(INFO) << "get_some_cstr String = " << s;
   free(s);
   Registry& r = Registry::instance();

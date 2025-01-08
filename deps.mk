@@ -86,6 +86,9 @@ yaml-cpp:
 
 rume:
 	cd $(src_dir)/rume; \
+	cargo clippy --all-targets --all-features -- -D warnings && \
+	cargo test && \
 	cargo build --release && \
 	cp target/release/librume.a $(prefix)/lib/ && \
+	cbindgen --config cbindgen.toml --crate rume --output rume.h && \
 	cp rume.h $(prefix)/include/;
