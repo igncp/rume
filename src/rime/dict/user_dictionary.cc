@@ -16,11 +16,11 @@
 #include <rime/ticket.h>
 #include <rime/algo/dynamics.h>
 #include <rime/algo/syllabifier.h>
-#include <rime/algo/strings.h>
 #include <rime/dict/db.h>
 #include <rime/dict/table.h>
 #include <rime/dict/user_dictionary.h>
 #include <rime/dict/vocabulary.h>
+#include "rume.h"
 
 namespace rime {
 
@@ -77,8 +77,15 @@ void DfsState::RecruitEntry(size_t pos,
                                            syllabary ? &full_code : nullptr);
   if (e) {
     if (syllabary) {
-      vector<string> syllables =
-          strings::split(full_code, " ", strings::SplitBehavior::SkipToken);
+      // TODO: free
+      char* full_code_cstr = strdup(full_code.c_str());
+      // TODO: free
+      char** syllables_raw = rume_strings_split(
+          full_code_cstr, " ", (int*)STRING_SPLIT_BEHAVIOR_SKIP_TOKEN);
+      vector<string> syllables;
+      for (char** s = syllables_raw; *s; ++s) {
+        syllables.push_back(*s);
+      }
       Code numeric_code;
       for (auto s = syllables.begin(); s != syllables.end(); ++s) {
         auto found = syllabary->find(*s);
