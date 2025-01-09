@@ -4,6 +4,10 @@
 #include <ostream>
 #include <new>
 
+
+
+
+
 struct Foo {
   enum class Tag {
     A,

@@ -12,6 +12,7 @@
 #include <rime/dict/dict_settings.h>
 #include <rime/dict/entry_collector.h>
 #include <rime/dict/preset_vocabulary.h>
+#include "rume.h"
 
 namespace rime {
 
@@ -87,7 +88,17 @@ void EntryCollector::Collect(const path& dict_file) {
       continue;
     }
     // read a dict entry
-    auto row = strings::split(line, "\t");
+    auto line_cstr = line.c_str();
+    auto row_ptr = rume_strings_split(line_cstr, "\t", NULL);
+    if (!row_ptr) {
+      LOG(WARNING) << "invalid entry: " << line;
+      continue;
+    }
+    vector<string> row;
+    while (*row_ptr) {
+      row.emplace_back(*row_ptr);
+      ++row_ptr;
+    }
     int num_columns = static_cast<int>(row.size());
     if (num_columns <= text_column || row[text_column].empty()) {
       LOG(WARNING) << "Missing entry text at #" << num_entries << ".";
