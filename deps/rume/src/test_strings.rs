@@ -40,4 +40,5 @@ fn test_split() {
         split("a,b,c", "b", Some(SplitBehavior::SkipToken)),
         vec!["a,", ",c"]
     );
+    assert_eq!(split("ba", " ", Some(SplitBehavior::SkipToken)), vec!["ba"]);
 }

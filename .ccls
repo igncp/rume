@@ -1,0 +1,5 @@
+clang
+-std=c++17
+-stdlib=libc++
+-iinclude
+-iinclude/gtest

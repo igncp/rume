@@ -7,6 +7,10 @@ pub enum SplitBehavior {
 pub fn split(str: &str, delim: &str, behavior_opt: Option<SplitBehavior>) -> Vec<String> {
     let mut strings = Vec::new();
 
+    if str.is_empty() {
+        return strings;
+    }
+
     let behavior = behavior_opt.unwrap_or(SplitBehavior::KeepToken);
     let str_len = str.len();
 

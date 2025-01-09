@@ -7,14 +7,6 @@
 namespace rime {
 namespace strings {
 
-enum class SplitBehavior { KeepToken, SkipToken };
-
-vector<string> split(const string& str,
-                     const string& delim,
-                     SplitBehavior behavior);
-
-vector<string> split(const string& str, const string& delim);
-
 template <typename Iter, typename T>
 string join(Iter start, Iter end, T&& delim) {
   string result;

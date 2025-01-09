@@ -83,8 +83,9 @@ void DfsState::RecruitEntry(size_t pos,
       char** syllables_raw = rume_strings_split(
           full_code_cstr, " ", (int*)STRING_SPLIT_BEHAVIOR_SKIP_TOKEN);
       vector<string> syllables;
-      for (char** s = syllables_raw; *s; ++s) {
-        syllables.push_back(*s);
+      while (*syllables_raw) {
+        syllables.push_back(*syllables_raw);
+        ++syllables_raw;
       }
       Code numeric_code;
       for (auto s = syllables.begin(); s != syllables.end(); ++s) {
