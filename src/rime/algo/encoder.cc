@@ -9,6 +9,9 @@
 #include <rime/config.h>
 #include <rime/algo/encoder.h>
 #include <rime/algo/strings.h>
+#include "rume.h"
+#include <iostream>
+using namespace std;
 
 namespace rime {
 
@@ -20,8 +23,26 @@ string RawCode::ToString() const {
 }
 
 void RawCode::FromString(const string& code_str) {
-  *dynamic_cast<vector<string>*>(this) =
-      strings::split(code_str, " ", strings::SplitBehavior::SkipToken);
+  // *dynamic_cast<vector<string>*>(this) =
+  //     strings::split(code_str, " ", strings::SplitBehavior::SkipToken);
+
+  vector<string> codes;
+
+  if (!code_str.empty()) {
+    auto code_str_cstr = code_str.c_str();
+    auto codes_ptr =
+        rume_strings_split(code_str_cstr, " ", NULL
+                           // (int*)STRING_SPLIT_BEHAVIOR_SKIP_TOKEN // TODO
+        );
+    if (codes_ptr) {
+      while (*codes_ptr) {
+        codes.emplace_back(*codes_ptr);
+        ++codes_ptr;
+      }
+    }
+  }
+
+  *dynamic_cast<vector<string>*>(this) = codes;
 }
 
 TableEncoder::TableEncoder(PhraseCollector* collector)

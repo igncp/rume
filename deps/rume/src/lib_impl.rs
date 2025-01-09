@@ -63,7 +63,7 @@ pub fn rume_strings_split_impl(
     let strings_vec = split(str, delim, behavior);
 
     let strings_vec_ptr = unsafe {
-        libc::malloc(strings_vec.len() * mem::size_of::<*mut c_char>()) as *mut *mut c_char
+        libc::malloc(strings_vec.len() * mem::size_of::<*mut c_char>() + 1) as *mut *mut c_char
     };
 
     if strings_vec_ptr.is_null() {
@@ -83,6 +83,8 @@ pub fn rume_strings_split_impl(
             libc::strcpy(*strings_vec_ptr.add(i), c_str.as_ptr());
         }
     }
+
+    unsafe { *strings_vec_ptr.add(strings_vec.len()) = null_mut() };
 
     strings_vec_ptr
 }

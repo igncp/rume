@@ -4,27 +4,23 @@
 
 using namespace std;
 
-class RimeStringsTest : public ::testing::Test {
- protected:
-  RimeStringsTest() = default;
-
-  virtual void SetUp() {}
-
-  virtual void TearDown() {}
-};
-
-TEST(RimeStringsTest, Dummy) {
+TEST(RimeStringsTest, SplitsWithDelimiter) {
   auto s = "Hello, world!";
   auto delim = ",";
   auto split_strings_ptr = rume_strings_split(s, delim, NULL);
-  vector<string> split_strings;
-  int i = 0;
+
   if (split_strings_ptr == NULL) {
     cout << "split_strings_ptr is NULL" << endl;
     ASSERT_TRUE(false);
   }
-  auto ptr_size = sizeof(split_strings_ptr) / sizeof(split_strings_ptr[0]);
-  cout << "ptr_size: " << ptr_size << endl;
 
-  ASSERT_TRUE(false);
+  vector<string> split_strings;
+  while (*split_strings_ptr) {
+    split_strings.push_back(*split_strings_ptr);
+    ++split_strings_ptr;
+  }
+
+  ASSERT_EQ(split_strings.size(), 2);
+  ASSERT_EQ(split_strings[0], "Hello");
+  ASSERT_EQ(split_strings[1], " world!");
 }
