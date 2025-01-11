@@ -7,7 +7,7 @@ impl RimeLeversApi {
     pub fn custom_settings_init(config_id: &str, schema_id: &str) -> RimeCustomSettings {
         RimeCustomSettings::new(config_id, schema_id)
     }
-    pub fn load_settings(settings: &RimeCustomSettings) -> bool {
+    pub fn load_settings(settings: &mut RimeCustomSettings) -> bool {
         settings.load()
     }
     pub fn customize_item(settings: &RimeCustomSettings, key: &str, config: &RimeConfig) -> bool {

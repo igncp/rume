@@ -26,9 +26,9 @@ fn apply_patch(config_id: &str, key: &str, yaml: String) -> i32 {
 
     let mut ret = 1;
     if rime.config_load_string(&mut config, yaml) {
-        let settings = RimeLeversApi::custom_settings_init(config_id, "rime_patch");
+        let mut settings = RimeLeversApi::custom_settings_init(config_id, "rime_patch");
 
-        RimeLeversApi::load_settings(&settings);
+        RimeLeversApi::load_settings(&mut settings);
 
         if RimeLeversApi::customize_item(&settings, key, &config) {
             RimeLeversApi::save_settings(&settings);

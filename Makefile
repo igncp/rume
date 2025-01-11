@@ -65,7 +65,15 @@ librime-static:
 	-DBUILD_SHARED_LIBS=OFF
 	cmake --build $(build)
 
-release:
+rust-code:
+	cargo build --release --all-targets
+	# Not used yet, but added for debugging
+	cbindgen --config cbindgen.rime_api.toml --crate rime --output rust_rime_api.h && \
+		mv rust_rime_api.h target/release/rime_api.h
+	cbindgen --config cbindgen.rime_levers_api.toml --crate rime --output rust_rime_levers_api.h && \
+		mv rust_rime_levers_api.h target/release/rime_levers_api.h
+
+release: rust-code
 	cmake . -B$(build) \
 	-DCMAKE_INSTALL_PREFIX=$(prefix) \
 	-DCMAKE_BUILD_TYPE=Release \
