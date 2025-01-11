@@ -1,0 +1,8 @@
+# https://github.com/mozilla/cbindgen/blob/master/docs.md
+
+language = "C"
+cpp_compat = true
+style = "type"
+
+[export]
+include = ["RimeTraits", "RimeComposition", "RimeApi"]
