@@ -10,7 +10,6 @@ use rime::{
     rime_api::{get_rime_api, RimeConfig, RimeTraits},
     rime_levers_api::RimeLeversApi,
 };
-
 use std::{env, io::Read};
 
 fn apply_patch(config_id: &str, key: &str, yaml: String) -> i32 {
@@ -23,23 +22,21 @@ fn apply_patch(config_id: &str, key: &str, yaml: String) -> i32 {
         return 1;
     }
 
-    let module = module.unwrap();
-    let levers: RimeLeversApi = module.get_api();
     let mut config = RimeConfig::new();
 
     let mut ret = 1;
     if rime.config_load_string(&mut config, yaml) {
-        let settings = levers.custom_settings_init(config_id, "rime_patch");
+        let settings = RimeLeversApi::custom_settings_init(config_id, "rime_patch");
 
-        levers.load_settings(&settings);
+        RimeLeversApi::load_settings(&settings);
 
-        if levers.customize_item(&settings, key, &config) {
-            levers.save_settings(&settings);
+        if RimeLeversApi::customize_item(&settings, key, &config) {
+            RimeLeversApi::save_settings(&settings);
             eprintln!("patch applied.");
             ret = 0;
         }
 
-        levers.custom_settings_destroy(settings);
+        RimeLeversApi::custom_settings_destroy(settings);
         rime.config_close(&config);
     } else {
         eprintln!("bad yaml document.");

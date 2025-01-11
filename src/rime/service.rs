@@ -16,7 +16,11 @@ impl Service {
         &SERVICE
     }
 
-    pub fn deployer(&mut self) -> &mut Deployer {
+    pub fn deployer(&self) -> &Deployer {
+        &self._deployer
+    }
+
+    pub fn deployer_mut(&mut self) -> &mut Deployer {
         &mut self._deployer
     }
 }

@@ -28,8 +28,6 @@ impl Display for RimeModule {
     }
 }
 
-pub struct RimeCustomSettings;
-
 impl RimeApi {
     pub fn setup(&self, traits: &Option<RimeTraits>) {
         // TODO: This differentiates between shared/static library build
