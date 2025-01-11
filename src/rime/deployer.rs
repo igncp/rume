@@ -11,6 +11,7 @@ pub struct Deployer {
     pub prebuilt_data_dir: std::path::PathBuf,
     pub shared_data_dir: std::path::PathBuf,
     pub staging_dir: std::path::PathBuf,
+    pub user_data_dir: std::path::PathBuf,
 }
 
 lazy_static! {

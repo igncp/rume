@@ -1,10 +1,4 @@
-use std::sync::Arc;
-
-use super::{
-    deployer::{register_deployer, DEPLOYER_MODULE},
-    module::ModuleManager,
-    service::Service,
-};
+use super::{deployer::register_deployer, module::ModuleManager, service::Service};
 use crate::rime_api::RimeTraits;
 use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
@@ -33,7 +27,7 @@ pub fn setup_deployer(traits: &Option<RimeTraits>) {
     register_deployer();
 
     let mut service = Service::instance().lock().unwrap();
-    let deployer = service.deployer();
+    let deployer = service.deployer_mut();
 
     // if (RIME_PROVIDED(traits, shared_data_dir))
     //   deployer.shared_data_dir = path(traits->shared_data_dir);
