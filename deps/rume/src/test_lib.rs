@@ -44,10 +44,8 @@ mod test {
         let base_cstr = std::ffi::CString::new(base_str).unwrap();
         let delim_str = ",";
         let delim_cstr = std::ffi::CString::new(delim_str).unwrap();
-        let behavior_ptr = std::ptr::null();
 
-        let vec_str_ptr =
-            rume_strings_split_impl(base_cstr.as_ptr(), delim_cstr.as_ptr(), behavior_ptr);
+        let vec_str_ptr = rume_strings_split_impl(base_cstr.as_ptr(), delim_cstr.as_ptr(), 0);
 
         assert!(!vec_str_ptr.is_null());
 
@@ -83,7 +81,7 @@ mod test {
         let vec_str_ptr = rume_strings_split_impl(
             base_cstr.as_ptr(),
             delim_cstr.as_ptr(),
-            &STRING_SPLIT_BEHAVIOR_SKIP_TOKEN,
+            STRING_SPLIT_BEHAVIOR_SKIP_TOKEN,
         );
 
         assert!(!vec_str_ptr.is_null());

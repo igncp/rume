@@ -3,10 +3,11 @@
 #include <cstdlib>
 #include <ostream>
 #include <new>
+#include <string>
 
+constexpr static const int STRING_SPLIT_BEHAVIOR_KEEP_TOKEN_ = 1;
 
-
-
+constexpr static const int STRING_SPLIT_BEHAVIOR_SKIP_TOKEN_ = 2;
 
 struct Foo {
   enum class Tag {
@@ -39,6 +40,6 @@ char *rume_use_foo(Foo test_param);
 
 /// # Safety
 /// This function is unsafe because it dereferences the `str_ptr` and `delim_str` pointers.
-char **rume_strings_split(const char *str_ptr, const char *delim_str, const int *behavior_ptr);
+char **rume_strings_split(const char *str_ptr, const char *delim_str, int behavior_ptr);
 
 }  // extern "C"

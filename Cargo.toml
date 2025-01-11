@@ -1,0 +1,24 @@
+[package]
+name = "rime"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lazy_static = "1.5.0"
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+
+[[bin]]
+name = "rime_patch"
+path = "tools/rime_patch.rs"
+
+[lib]
+name = "rime"
+path = "src/lib.rs"
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"

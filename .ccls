@@ -1,5 +1,7 @@
 clang
 -std=c++17
 -stdlib=libc++
--iinclude
--iinclude/gtest
+-Iinclude
+-Isrc
+-Isrc/rime
+-Isrc/rime/algo

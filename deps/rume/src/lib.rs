@@ -40,7 +40,7 @@ pub unsafe extern "C" fn rume_use_foo(test_param: Foo) -> *mut c_char {
 pub unsafe extern "C" fn rume_strings_split(
     str_ptr: *const c_char,
     delim_str: *const c_char,
-    behavior_ptr: *const libc::c_int,
+    behavior_ptr: libc::c_int,
 ) -> *mut *mut c_char {
     rume_strings_split_impl(str_ptr, delim_str, behavior_ptr)
 }

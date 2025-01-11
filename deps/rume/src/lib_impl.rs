@@ -6,8 +6,8 @@ use std::mem;
 use std::os::raw::c_char;
 use std::ptr::null_mut;
 
-pub const STRING_SPLIT_BEHAVIOR_KEEP_TOKEN_: libc::c_int = SplitBehavior::KeepToken as libc::c_int;
-pub const STRING_SPLIT_BEHAVIOR_SKIP_TOKEN_: libc::c_int = SplitBehavior::SkipToken as libc::c_int;
+pub const STRING_SPLIT_BEHAVIOR_KEEP_TOKEN_: libc::c_int = 1;
+pub const STRING_SPLIT_BEHAVIOR_SKIP_TOKEN_: libc::c_int = 2;
 
 const RETURNED_STRING: &str = "Some string from Rust";
 
@@ -36,9 +36,18 @@ pub fn rume_get_init_str_impl(desc: *mut *mut c_char) -> i32 {
 impl From<libc::c_int> for SplitBehavior {
     fn from(val: libc::c_int) -> Self {
         match val {
-            0 => SplitBehavior::KeepToken,
-            1 => SplitBehavior::SkipToken,
+            STRING_SPLIT_BEHAVIOR_KEEP_TOKEN_ => SplitBehavior::KeepToken,
+            STRING_SPLIT_BEHAVIOR_SKIP_TOKEN_ => SplitBehavior::SkipToken,
             _ => panic!("Invalid value for SplitBehavior"),
+        }
+    }
+}
+
+impl From<SplitBehavior> for libc::c_int {
+    fn from(val: SplitBehavior) -> Self {
+        match val {
+            SplitBehavior::KeepToken => STRING_SPLIT_BEHAVIOR_KEEP_TOKEN_,
+            SplitBehavior::SkipToken => STRING_SPLIT_BEHAVIOR_SKIP_TOKEN_,
         }
     }
 }
@@ -46,12 +55,12 @@ impl From<libc::c_int> for SplitBehavior {
 pub fn rume_strings_split_impl(
     str_ptr: *const c_char,
     delim_str: *const c_char,
-    behavior_ptr: *const c_int,
+    behavior_ptr: c_int,
 ) -> *mut *mut c_char {
-    let behavior = if behavior_ptr.is_null() {
+    let behavior = if behavior_ptr == 0 {
         None
     } else {
-        Some(unsafe { *behavior_ptr }.into())
+        Some(behavior_ptr.into())
     };
 
     let str = unsafe { CStr::from_ptr(str_ptr) }

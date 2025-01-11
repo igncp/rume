@@ -7,7 +7,7 @@ using namespace std;
 TEST(RimeStringsTest, SplitsWithDelimiter) {
   auto s = "Hello, world!";
   auto delim = ",";
-  auto split_strings_ptr = rume_strings_split(s, delim, NULL);
+  auto split_strings_ptr = rume_strings_split(s, delim, 0);
 
   if (split_strings_ptr == NULL) {
     cout << "split_strings_ptr is NULL" << endl;
