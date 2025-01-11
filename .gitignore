@@ -20,3 +20,10 @@ version-info.txt
 
 /target
 /deps/boost-1.84.0/
+
+
+# Added by cargo
+#
+# already existing elements were commented out
+
+#/target

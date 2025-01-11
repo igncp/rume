@@ -93,7 +93,7 @@ void EntryCollector::Collect(const path& dict_file) {
     }
     // read a dict entry
     auto line_cstr = line.c_str();
-    auto row_ptr = rume_strings_split(line_cstr, "\t", NULL);
+    auto row_ptr = rume_strings_split(line_cstr, "\t", 0);
     if (!row_ptr) {
       LOG(WARNING) << "invalid entry: " << line;
       continue;

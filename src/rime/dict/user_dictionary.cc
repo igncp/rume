@@ -80,8 +80,9 @@ void DfsState::RecruitEntry(size_t pos,
       // TODO: free
       char* full_code_cstr = strdup(full_code.c_str());
       // TODO: free
-      char** syllables_raw = rume_strings_split(
-          full_code_cstr, " ", (int*)STRING_SPLIT_BEHAVIOR_SKIP_TOKEN);
+      auto syllables_raw = rume_strings_split(full_code_cstr, " ",
+                                              STRING_SPLIT_BEHAVIOR_SKIP_TOKEN);
+
       vector<string> syllables;
       while (*syllables_raw) {
         syllables.push_back(*syllables_raw);
