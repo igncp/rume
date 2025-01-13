@@ -23,18 +23,26 @@ pub fn setup_deployer(traits: &Option<RimeTraits>) {
         return;
     }
 
+    let traits = traits.as_ref().unwrap();
+
     // Register modules here, insted of using macros
     register_deployer();
 
     let mut service = Service::instance().lock().unwrap();
     let deployer = service.deployer_mut();
 
-    // if (RIME_PROVIDED(traits, shared_data_dir))
-    //   deployer.shared_data_dir = path(traits->shared_data_dir);
-    // if (RIME_PROVIDED(traits, user_data_dir))
-    //   deployer.user_data_dir = path(traits->user_data_dir);
-    // if (RIME_PROVIDED(traits, distribution_name))
-    //   deployer.distribution_name = traits->distribution_name;
+    if traits.shared_data_dir.is_some() {
+        deployer.shared_data_dir = traits.shared_data_dir.clone().unwrap().into();
+    }
+
+    if traits.user_data_dir.is_some() {
+        deployer.user_data_dir = traits.user_data_dir.clone().unwrap().into();
+    }
+
+    if !traits.distribution_name.is_empty() {
+        deployer.distribution_code_name = traits.distribution_name.to_string().clone();
+    }
+
     // if (RIME_PROVIDED(traits, distribution_code_name))
     //   deployer.distribution_code_name = traits->distribution_code_name;
     // if (RIME_PROVIDED(traits, distribution_version))
@@ -45,10 +53,12 @@ pub fn setup_deployer(traits: &Option<RimeTraits>) {
     //   deployer.prebuilt_data_dir = path(traits->prebuilt_data_dir);
     // else
     deployer.prebuilt_data_dir = deployer.shared_data_dir.join("build");
-    // if (RIME_PROVIDED(traits, staging_dir))
-    //   deployer.staging_dir = path(traits->staging_dir);
-    // else
-    deployer.staging_dir = deployer.shared_data_dir.join("build");
+
+    if traits.staging_dir.is_some() {
+        deployer.staging_dir = traits.staging_dir.clone().unwrap().into();
+    } else {
+        deployer.staging_dir = deployer.shared_data_dir.join("build");
+    }
 }
 
 pub fn setup_logging(traits_opt: &Option<RimeTraits>) {

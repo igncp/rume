@@ -8,6 +8,7 @@ use std::sync::{Arc, Mutex};
 
 #[derive(Default)]
 pub struct Deployer {
+    pub distribution_code_name: String,
     pub prebuilt_data_dir: std::path::PathBuf,
     pub shared_data_dir: std::path::PathBuf,
     pub staging_dir: std::path::PathBuf,

@@ -10,9 +10,14 @@ pub struct RimeApi;
 #[derive(Default)]
 pub struct RimeTraits {
     pub app_name: &'static str,
-    pub log_dir: Option<&'static str>,
+    pub distribution_name: &'static str,
     pub min_log_level: Option<i32>,
     pub modules: Option<&'static [&'static str]>,
+
+    pub log_dir: Option<&'static str>,
+    pub shared_data_dir: Option<&'static str>,
+    pub staging_dir: Option<&'static str>,
+    pub user_data_dir: Option<&'static str>,
 }
 
 pub struct RimeConfig;
