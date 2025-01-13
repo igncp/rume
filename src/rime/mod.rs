@@ -6,5 +6,6 @@ pub mod dict;
 pub mod lever;
 pub mod module;
 pub mod registry;
+pub mod schema;
 pub mod service;
 pub mod setup;

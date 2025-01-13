@@ -1,5 +1,4 @@
-use super::config_data::ConfigData;
-use crate::rime::component::ComponentBase;
+use super::{config_data::ConfigData, plugins::ConfigCompilerPlugin};
 
 #[derive(Default)]
 pub struct Config {
@@ -12,6 +11,42 @@ impl Config {
     }
 }
 
-pub struct ConfigComponent;
+pub trait ConfigLoader {}
+pub trait ConfigResourceProvider {}
 
-impl ComponentBase for ConfigComponent {}
+pub enum ConfigInit<A> {
+    InitFn(A),
+    InitDefaultType,
+}
+
+pub struct ConfigComponent<A, B, C>
+where
+    A: ConfigResourceProvider,
+    B: ConfigLoader,
+    C: Fn(&mut B),
+{
+    pub resource_provider: A,
+    pub loader: B,
+    pub init: ConfigInit<C>,
+}
+
+pub struct DefaultConfigResourceProvider;
+pub struct DeployedConfigResourceProvider;
+pub struct UserConfigResourceProvider;
+
+impl ConfigResourceProvider for DefaultConfigResourceProvider {}
+impl ConfigResourceProvider for DeployedConfigResourceProvider {}
+impl ConfigResourceProvider for UserConfigResourceProvider {}
+
+pub struct ConfigLoaderStruct;
+
+// Equivalent to ConfigLoader class
+impl ConfigLoaderStruct {
+    pub fn set_auto_save(&mut self, auto_save: bool) {}
+}
+
+pub struct ConfigBuilder;
+
+impl ConfigBuilder {
+    pub fn install_plugin<T: ConfigCompilerPlugin>(&mut self, _p: T) {}
+}
