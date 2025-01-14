@@ -17,7 +17,7 @@ class RimeConfigTest : public ::testing::Test {
 
   virtual void SetUp() {
     component_.reset(new ConfigComponent<ConfigLoader>);
-    config_.reset(component_->Create("config_test"));
+    config_.reset(component_->Create("config_test2"));
   }
 
   virtual void TearDown() {}

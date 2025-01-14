@@ -1,3 +1,5 @@
+use crate::rime::{component::ComponentBase, registry::Registry};
+
 use super::{config_data::ConfigData, plugins::ConfigCompilerPlugin};
 
 #[derive(Default)]
@@ -8,6 +10,13 @@ pub struct Config {
 impl Config {
     pub(crate) fn load_from_file(&mut self) -> bool {
         self.data.load_from_file()
+    }
+
+    pub(crate) fn require<'a>(
+        registry: &'a Registry,
+        name: &str,
+    ) -> Option<&'a Box<dyn ComponentBase>> {
+        registry.find(name)
     }
 }
 

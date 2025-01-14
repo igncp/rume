@@ -27,4 +27,14 @@ impl Registry {
         let boxed = Box::new(value);
         self.map_.insert(name.to_string(), boxed);
     }
+
+    pub fn unregister(&mut self, name: &str) {
+        info!("Unregistering {}", name);
+
+        self.map_.remove(name);
+    }
+
+    pub fn find(&self, name: &str) -> Option<&Box<dyn ComponentBase>> {
+        self.map_.get(name)
+    }
 }
