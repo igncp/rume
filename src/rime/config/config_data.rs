@@ -1,3 +1,5 @@
+use super::config_types::ConfigValue;
+
 #[derive(Default)]
 pub struct ConfigData;
 
@@ -21,5 +23,13 @@ impl ConfigData {
         // }
 
         true
+    }
+
+    pub(crate) fn traverse(&self, path: &str) -> Result<Option<ConfigValue>, String> {
+        return Ok(Some(ConfigValue::String("value".to_string())));
+    }
+
+    pub(crate) fn traverse_write(&mut self, path: &str, value: ConfigValue) -> Result<(), String> {
+        return Ok(());
     }
 }

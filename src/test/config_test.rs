@@ -1,26 +1,33 @@
 use crate::rime::{
-    config::config_component::{
-        Config, ConfigComponent, ConfigInit, ConfigLoaderStruct, UserConfigResourceProvider,
-    },
-    registry::Registry,
+    config::config_component::{Config, UserConfigComponent},
+    registry::{Registry, RegistryValue},
 };
 
 #[test]
 fn test_round_trip() {
     let mut registry = Registry::instance().lock().unwrap();
-    let component = ConfigComponent {
-        loader: ConfigLoaderStruct,
-        resource_provider: UserConfigResourceProvider,
-        init: ConfigInit::InitFn(|loader: &mut ConfigLoaderStruct| {
-            loader.set_auto_save(true);
-        }),
+
+    let component = UserConfigComponent;
+
+    registry.register("test_config", RegistryValue::UserConfigComponent(component));
+
+    let extracted = match Config::require(&registry, "test_config").unwrap() {
+        RegistryValue::UserConfigComponent(v) => v,
+        _ => panic!("Unexpected value"),
     };
 
-    registry.register("test_config", component);
+    {
+        let mut config = extracted.create("config_round_trip_test").unwrap();
 
-    let extracted = Config::require(&registry, "test_config");
+        assert!(config.set_string("key", "value").is_ok())
+    }
 
-    assert_eq!(extracted.is_some(), true);
+    {
+        let config = extracted.create("config_round_trip_test").unwrap();
+        let value = config.get_string("key").unwrap();
+
+        assert_eq!(value, Some("value".to_string()));
+    }
 
     registry.unregister("test_config");
 }

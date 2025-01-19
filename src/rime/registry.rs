@@ -1,16 +1,29 @@
 use lazy_static::lazy_static;
-use std::{collections::HashMap, sync::Mutex};
+use std::{
+    collections::HashMap,
+    rc::Rc,
+    sync::{Arc, Mutex},
+};
 use tracing::info;
 
-use super::component::ComponentBase;
+use super::config::config_component::{
+    ConfigBuilder, ConfigSchema, DeployedConfigComponent, UserConfigComponent,
+};
 
 #[derive(Default)]
 pub struct Registry {
-    map_: HashMap<String, Box<dyn ComponentBase>>,
+    map_: HashMap<String, RegistryValue>,
 }
 
 lazy_static! {
     pub static ref REGISTRY: Mutex<Box<Registry>> = Mutex::new(Box::new(Registry::default()));
+}
+
+pub enum RegistryValue {
+    ConfigBuilder(ConfigBuilder),
+    DeployedConfigComponent(Arc<Mutex<DeployedConfigComponent>>),
+    SchemaComponent(ConfigSchema),
+    UserConfigComponent(UserConfigComponent),
 }
 
 impl Registry {
@@ -18,14 +31,10 @@ impl Registry {
         &REGISTRY
     }
 
-    pub fn register<A>(&mut self, name: &str, value: A)
-    where
-        A: ComponentBase + 'static,
-    {
+    pub fn register(&mut self, name: &str, value: RegistryValue) {
         info!("Registering {}", name);
 
-        let boxed = Box::new(value);
-        self.map_.insert(name.to_string(), boxed);
+        self.map_.insert(name.to_string(), value);
     }
 
     pub fn unregister(&mut self, name: &str) {
@@ -34,7 +43,7 @@ impl Registry {
         self.map_.remove(name);
     }
 
-    pub fn find(&self, name: &str) -> Option<&Box<dyn ComponentBase>> {
+    pub fn find(&self, name: &str) -> Option<&RegistryValue> {
         self.map_.get(name)
     }
 }

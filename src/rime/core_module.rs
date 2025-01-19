@@ -9,14 +9,11 @@ use super::{
 };
 use crate::{
     rime::{
-        config::{
-            config_component::{ConfigComponent, ConfigInit, ConfigLoaderStruct},
-            plugins::{
-                AutoPatchConfigPlugin, BuildInfoPlugin, DefaultConfigPlugin,
-                LegacyDictionaryConfigPlugin, LegacyPresetConfigPlugin, SaveOutputPlugin,
-            },
+        config::config_component::{
+            ConfigComponent, ConfigLoaderStruct, ConfigSchema, DeployedConfigComponent,
+            UserConfigComponent,
         },
-        registry::Registry,
+        registry::{Registry, RegistryValue},
     },
     rime_api::RimeModule,
 };
@@ -69,56 +66,61 @@ lazy_static! {
             };
 
             {
-                let config_builder: ConfigComponent<
-                    DefaultConfigResourceProvider,
-                    ConfigBuilder,
-                    _,
-                > = ConfigComponent {
-                    loader: ConfigBuilder,
-                    resource_provider: DefaultConfigResourceProvider,
-                    init: ConfigInit::InitFn(|builder: &mut ConfigBuilder| {
-                        builder.install_plugin(AutoPatchConfigPlugin);
-                        builder.install_plugin(DefaultConfigPlugin);
-                        builder.install_plugin(LegacyPresetConfigPlugin);
-                        builder.install_plugin(LegacyDictionaryConfigPlugin);
-                        builder.install_plugin(BuildInfoPlugin);
-                        builder.install_plugin(SaveOutputPlugin);
-                    }),
-                };
+                // let config_builder: ConfigComponent<
+                //     DefaultConfigResourceProvider,
+                //     ConfigBuilder,
+                //     _,
+                // > = ConfigComponent {
+                //     loader: ConfigBuilder,
+                //     resource_provider: DefaultConfigResourceProvider,
+                //     init: ConfigInit::InitFn(|builder: &mut ConfigBuilder| {
+                //         builder.install_plugin(AutoPatchConfigPlugin);
+                //         builder.install_plugin(DefaultConfigPlugin);
+                //         builder.install_plugin(LegacyPresetConfigPlugin);
+                //         builder.install_plugin(LegacyDictionaryConfigPlugin);
+                //         builder.install_plugin(BuildInfoPlugin);
+                //         builder.install_plugin(SaveOutputPlugin);
+                //     }),
+                // };
+                let config_builder = ConfigBuilder;
 
                 let mut r = get_r();
-                r.register("config_builder", config_builder);
+                r.register("config_builder", RegistryValue::ConfigBuilder(config_builder));
             }
 
             {
-                let create_config_loader = || ConfigComponent {
-                    loader: ConfigLoaderStruct,
-                    resource_provider: DeployedConfigResourceProvider,
-                    init: ConfigInit::InitDefaultType,
-                };
+                // let create_config_loader = || ConfigComponent {
+                //     loader: ConfigLoaderStruct,
+                //     resource_provider: DeployedConfigResourceProvider,
+                //     init: ConfigInit::InitDefaultType,
+                // };
+
+                let deployed_config_component = Arc::new(Mutex::new(DeployedConfigComponent));
+                let schema_config = ConfigSchema(deployed_config_component.clone());
 
                 let mut r = get_r();
 
-                r.register("config", create_config_loader());
-                r.register("schema", SchemaComponent(create_config_loader()));
+                r.register("config", RegistryValue::DeployedConfigComponent(deployed_config_component));
+                r.register("schema", RegistryValue::SchemaComponent(schema_config));
             }
 
             {
-                let user_config: ConfigComponent<
-                    UserConfigResourceProvider,
-                    ConfigLoaderStruct,
-                    _,
-                > = ConfigComponent {
-                    loader: ConfigLoaderStruct,
-                    resource_provider: UserConfigResourceProvider,
-                    init: ConfigInit::InitFn(|loader: &mut ConfigLoaderStruct| {
-                        loader.set_auto_save(true);
-                    }),
-                };
+                // let user_config: ConfigComponent<
+                //     UserConfigResourceProvider,
+                //     ConfigLoaderStruct,
+                //     _,
+                // > = ConfigComponent {
+                //     loader: ConfigLoaderStruct,
+                //     resource_provider: UserConfigResourceProvider,
+                //     init: ConfigInit::InitFn(|loader: &mut ConfigLoaderStruct| {
+                //         loader.set_auto_save(true);
+                //     }),
+                // };
 
+                let user_config  = UserConfigComponent;
                 let mut r = get_r();
 
-                r.register("user_config", user_config);
+                r.register("user_config", RegistryValue::UserConfigComponent(user_config));
             }
         }))
     });
