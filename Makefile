@@ -113,5 +113,11 @@ uninstall-debug:
 test: release
 	(cd $(build); ctest --output-on-failure)
 
+test-rust:
+	RUSTFLAGS=-Awarnings cargo test
+
+check-rust:
+	RUSTFLAGS=-Awarnings cargo check
+
 test-debug: debug
 	(cd $(build); ctest --output-on-failure)

@@ -1,5 +1,5 @@
 use crate::rime::{
-    config::config_component::{Config, UserConfigComponent},
+    config::config_component::{Config, ConfigLoaderStruct, UserConfigComponent},
     registry::{Registry, RegistryValue},
 };
 
@@ -7,7 +7,11 @@ use crate::rime::{
 fn test_round_trip() {
     let mut registry = Registry::instance().lock().unwrap();
 
-    let component = UserConfigComponent;
+    let component = UserConfigComponent {
+        init: |loader: &mut ConfigLoaderStruct| {
+            loader.set_auto_save(true);
+        },
+    };
 
     registry.register("test_config", RegistryValue::UserConfigComponent(component));
 
