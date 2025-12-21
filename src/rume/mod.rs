@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 pub struct NewRumeConfig {
     pub app_name: String,
     pub min_log_level: Option<u32>,
@@ -5,22 +8,22 @@ pub struct NewRumeConfig {
 
 pub struct Rume {
     pub rume_config: Option<NewRumeConfig>,
-    initiallyzed: bool,
+    initialized: bool,
 }
 
 impl Rume {
     pub fn new(opt: Option<NewRumeConfig>) -> Self {
         Self {
             rume_config: opt,
-            initiallyzed: false,
+            initialized: false,
         }
     }
 
     pub fn init(&mut self) -> Result<(), String> {
-        if self.initiallyzed {
+        if self.initialized {
             return Ok(());
         }
-        self.initiallyzed = true;
+        self.initialized = true;
         Ok(())
     }
 

@@ -19,4 +19,4 @@ deps/*.tar.xz
 version-info.txt
 
 /target
-/deps/boost-1.84.0/
+/deps/boost-1.89.0/
