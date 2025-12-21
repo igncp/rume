@@ -16,10 +16,10 @@ codegen-units = 1
 panic = "abort"
 
 [[bin]]
-name = "rime_patch"
-path = "tools/rime_patch.rs"
+name = "rume_patch"
+path = "tools/rume_patch.rs"
 
 [lib]
 crate-type = ["staticlib", "lib"]
-name = "rime"
+name = "rume"
 path = "src/lib.rs"

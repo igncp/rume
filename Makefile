@@ -72,15 +72,12 @@ librime-static:
 	cmake --build $(build)
 
 rust-code:
-	# Don't block the build on clippy for now
-	cargo clippy --all-targets --all-features -- -D warnings || true
+	cargo clippy --all-targets --all-features -- -D warnings
 	cargo test --release --all-targets
 	cargo build --release --all-targets
 	# Not used yet, but added for debugging
-	cbindgen --config cbindgen.rime_api.toml --crate rime --output rust_rime_api.h && \
-		mv rust_rime_api.h target/release/rime_api.h
-	cbindgen --config cbindgen.rime_levers_api.toml --crate rime --output rust_rime_levers_api.h && \
-		mv rust_rime_levers_api.h target/release/rime_levers_api.h
+	cbindgen --config cbindgen.rume_api.toml --crate rime --output rust_rume_api.h && \
+		mv rust_rume_api.h target/release/rume_api.h
 
 release: rust-code
 	cmake . -B$(build) \
