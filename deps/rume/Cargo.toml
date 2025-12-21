@@ -3,9 +3,6 @@ name = "rume"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-libc = "0.2.169"
-
 [lib]
 crate-type = ["staticlib"]
 name = "rume"
@@ -16,3 +13,6 @@ opt-level = "z"
 lto = true
 codegen-units = 1
 panic = "abort"
+
+[dependencies]
+libc = "0.2.178"
