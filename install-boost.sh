@@ -1,7 +1,10 @@
 #!/bin/bash
 set -ex
 
-RIME_ROOT="$(cd "$(dirname "$0")"; pwd)"
+RIME_ROOT="$(
+    cd "$(dirname "$0")"
+    pwd
+)"
 
 boost_version="${boost_version=1.89.0}"
 
@@ -14,7 +17,16 @@ boost_tarball_sha256sum="9de758db755e8330a01d995b0a24d09798048400ac25c03fc5ea9be
 download_boost_source() {
     cd "${RIME_ROOT}/deps"
     if ! [[ -f "${boost_tarball}" ]]; then
-        curl -LO "${download_url}"
+        if [[ -f $HOME/Downloads/${boost_tarball} ]]; then
+            cp $HOME/Downloads/${boost_tarball} .
+        else
+            echo "Downloading Boost ${boost_version} from ${download_url} ..."
+            curl -LO "${download_url}"
+        fi
+
+        if ! [[ -f $HOME/Downloads/"${boost_tarball}" ]]; then
+            cp "${boost_tarball}" $HOME/Downloads/
+        fi
     fi
     echo "${boost_tarball_sha256sum}" | shasum -a 256 -c
     tar -xzf "${boost_tarball}"

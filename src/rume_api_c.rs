@@ -2,6 +2,6 @@ use std::ffi::c_int;
 
 #[repr(C)]
 pub struct Rume {
-    pub new: fn() -> *mut Rume,
-    pub init: fn() -> c_int,
+    pub new_: extern "C" fn() -> *mut Rume,
+    pub init: extern "C" fn(*mut Rume) -> c_int,
 }

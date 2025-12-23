@@ -20,3 +20,5 @@ version-info.txt
 
 /target
 /deps/boost-1.89.0/
+
+*_test.custom.yaml

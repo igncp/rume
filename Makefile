@@ -76,8 +76,8 @@ rust-code:
 	cargo test --release --all-targets
 	cargo build --release --all-targets
 	# Not used yet, but added for debugging
-	cbindgen --config cbindgen.rume_api.toml --crate rime --output rust_rume_api.h && \
-		mv rust_rume_api.h target/release/rume_api.h
+	cbindgen --config cbindgen.rume_api.toml --crate rume --output rume_api.h && \
+		mv rume_api.h include
 
 release: rust-code
 	cmake . -B$(build) \

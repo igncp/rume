@@ -2,7 +2,7 @@
 
 language = "C"
 cpp_compat = true
-style = "type"
+style = "both"
 
 [export]
 include = ["Rume"]

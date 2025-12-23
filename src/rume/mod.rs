@@ -1,5 +1,5 @@
-#[cfg(test)]
-mod tests;
+pub mod config_handler;
+pub mod version;
 
 pub struct NewRumeConfig {
     pub app_name: String,
@@ -24,15 +24,6 @@ impl Rume {
             return Ok(());
         }
         self.initialized = true;
-        Ok(())
-    }
-
-    pub fn apply_patch(&self, config_id: &str, key: &str, yaml: &str) -> Result<(), String> {
-        println!(
-            "Applying patch to config_id: {}, key: {}, yaml: {}",
-            config_id, key, yaml
-        );
-
         Ok(())
     }
 }

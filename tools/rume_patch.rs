@@ -1,6 +1,37 @@
 use std::{env, io::Read};
 
-use rume::rume::{NewRumeConfig, Rume};
+use rume::rume::{
+    config_handler::{ApplyPatchOpts, ConfigCurrentTime, ConfigHandler},
+    NewRumeConfig, Rume,
+};
+
+mod test_rume_patch;
+
+pub fn rume_patch(
+    config_id: &str,
+    key: &str,
+    yaml: String,
+    current_time: ConfigCurrentTime,
+) -> Result<(), String> {
+    let mut rume = Rume::new(Some(NewRumeConfig {
+        app_name: "rume_patch".to_string(),
+        min_log_level: Some(3),
+    }));
+
+    rume.init()?;
+
+    ConfigHandler::apply_patch(
+        &rume,
+        &ApplyPatchOpts {
+            config_id: config_id.to_string(),
+            key: key.to_string(),
+            yaml_value: yaml,
+            current_time,
+        },
+    )?;
+
+    Ok(())
+}
 
 // usage:
 //   rime_patch config_id key [yaml]
@@ -18,19 +49,8 @@ fn main() {
         std::process::exit(1);
     }
 
-    let mut rume = Rume::new(Some(NewRumeConfig {
-        app_name: "rime.patch".to_string(),
-        min_log_level: Some(3),
-    }));
-
-    rume.init().unwrap_or_else(|err| {
-        eprint!("Failed to initialize Rume: {}", err);
-        std::process::exit(1);
-    });
-
     let config_id = &args[1];
     let key = &args[2];
-
     let yaml = if args.len() > 3 {
         args[3].clone()
     } else {
@@ -39,9 +59,8 @@ fn main() {
         new_yaml
     };
 
-    rume.apply_patch(config_id, key, &yaml)
-        .unwrap_or_else(|err| {
-            eprint!("Failed to apply patch: {}", err);
-            std::process::exit(1);
-        });
+    rume_patch(config_id, key, yaml, None).unwrap_or_else(|err| {
+        eprint!("Unexpected error {err}");
+        std::process::exit(1);
+    })
 }
