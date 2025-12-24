@@ -1,57 +1,30 @@
-use crate::rume::Rume as RumeImpl;
+use rume_api_c_impl::{rume_free_impl, rume_init_impl, rume_new_impl};
 use std::ffi::c_void;
 
-#[repr(C)]
-pub struct Rume {
-    inner: *mut c_void,
-    /// # Safety
-    /// The caller must ensure that the pointer is valid
-    pub init: unsafe extern "C" fn(*mut Rume) -> i32,
-}
+mod rume_api_c_impl;
+mod utils;
 
-impl Rume {
-    pub extern "C" fn init(&mut self) -> i32 {
-        if self.inner.is_null() {
-            return -1;
-        }
-        let rume_impl = unsafe { &mut *(self.inner as *mut RumeImpl) };
-        match rume_impl.init() {
-            Ok(_) => 0,
-            Err(_) => -1,
-        }
-    }
+#[repr(C)]
+pub struct RumeC {
+    inner: *mut c_void,
 }
 
 /// # Safety
 /// The caller must ensure that `instance` is a valid pointer
 #[no_mangle]
-pub unsafe extern "C" fn rume_init(instance: *mut Rume) -> i32 {
-    if instance.is_null() {
-        return -1;
-    }
-    (*instance).init()
+pub unsafe extern "C" fn rume_init(instance: *mut RumeC) -> i32 {
+    rume_init_impl(instance)
 }
 
 #[no_mangle]
-pub extern "C" fn rume_new() -> *mut Rume {
-    let inner = Box::into_raw(Box::new(RumeImpl::new(None))) as *mut c_void;
-    let rume_instance = Rume {
-        inner,
-        init: rume_init,
-    };
-    Box::into_raw(Box::new(rume_instance))
+pub extern "C" fn rume_new() -> *mut RumeC {
+    rume_new_impl()
 }
 
 /// # Safety
 ///
 /// The caller must ensure that `instance` is a valid pointer
 #[no_mangle]
-pub unsafe extern "C" fn rume_free(instance: *mut Rume) {
-    if instance.is_null() {
-        return;
-    }
-    let wrapper = Box::from_raw(instance);
-    if !wrapper.inner.is_null() {
-        let _ = Box::from_raw(wrapper.inner as *mut RumeImpl);
-    }
+pub unsafe extern "C" fn rume_free(instance: *mut RumeC) {
+    rume_free_impl(instance);
 }

@@ -7,6 +7,7 @@ use crate::rume::version::RUME_VERSION;
 
 pub type ConfigCurrentTime = Option<chrono::DateTime<chrono::Local>>;
 
+#[derive(Default)]
 pub struct ApplyPatchOpts {
     pub config_id: String,
     pub key: String,
@@ -14,6 +15,7 @@ pub struct ApplyPatchOpts {
     pub current_time: ConfigCurrentTime,
 }
 
+#[derive(Default)]
 pub struct ConfigHandler {
     pub config_id: String,
     pub generator: String,
@@ -128,6 +130,10 @@ impl ConfigHandler {
     }
 
     fn get_file_name(&self) -> String {
+        if self.config_id.ends_with(".yaml") {
+            return self.config_id.clone();
+        }
+
         format!("{}.custom.yaml", self.config_id)
     }
 

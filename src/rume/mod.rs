@@ -1,4 +1,9 @@
+use tracing::{debug, info};
+
+use crate::rume::logger::setup_logs;
+
 pub mod config_handler;
+pub mod logger;
 pub mod version;
 
 pub struct NewRumeConfig {
@@ -20,11 +25,13 @@ impl Rume {
     }
 
     pub fn init(&mut self) -> Result<(), String> {
-        println!("Rume initializing...");
         if self.initialized {
+            debug!("Rume already initialized");
             return Ok(());
         }
         self.initialized = true;
+        setup_logs();
+        info!("Rume initializing...");
         Ok(())
     }
 }

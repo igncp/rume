@@ -21,6 +21,10 @@ panic = "abort"
 name = "rume_patch"
 path = "tools/rume_patch.rs"
 
+[[bin]]
+name = "rume_deployer"
+path = "tools/rume_deployer.rs"
+
 [lib]
 crate-type = ["cdylib", "lib"]
 name = "rume"
