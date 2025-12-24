@@ -75,9 +75,9 @@ rust-code:
 	cargo clippy --all-targets --all-features -- -D warnings
 	cargo test --release --all-targets
 	cargo build --release --all-targets
-	# Not used yet, but added for debugging
 	cbindgen --config cbindgen.rume_api.toml --crate rume --output rume_api.h && \
 		mv rume_api.h include
+	(cd test/rume_c && SKIP_SOURCE=1 bash run.sh)
 
 release: rust-code
 	cmake . -B$(build) \

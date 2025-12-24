@@ -20,6 +20,7 @@ impl Rume {
     }
 
     pub fn init(&mut self) -> Result<(), String> {
+        println!("Rume initializing...");
         if self.initialized {
             return Ok(());
         }
