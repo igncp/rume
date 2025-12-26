@@ -4,7 +4,7 @@ set -ex
 RIME_ROOT="$(
     cd "$(dirname "$0")"
     pwd
-)"
+)/.."
 
 boost_version="${boost_version=1.89.0}"
 

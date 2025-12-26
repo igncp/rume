@@ -7,7 +7,7 @@
 
 int main() {
     char* log_dir = getenv("RUME_LOG_DIR");
-    struct NewRumeConfigC config = {
+    struct RumeNewConfigC config = {
         .app_name = "test_rume",
         .log_dir = log_dir,
         .stdout_log = true
@@ -28,6 +28,8 @@ int main() {
     } else {
         fprintf(stdout, "Rume instance initialized successfully\n");
     }
+
+    rume_handle_key_down(rume_instance, 42);
 
     rume_free(rume_instance);
 

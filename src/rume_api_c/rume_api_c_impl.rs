@@ -1,18 +1,19 @@
 use std::ffi::c_void;
-use tracing::debug;
+use tracing::info;
 
 use super::RumeC;
 use crate::{
     rume::{NewRumeConfig, Rume},
     rume_api_c::{
+        key_code_to_key_table::get_key_table_from_key_code,
         utils::{c_char_to_str, extract_rume_instance, return_result_helper},
-        NewRumeConfigC,
+        RumeKeyEventResultC, RumeNewConfigC,
     },
 };
 
-impl From<*const NewRumeConfigC> for NewRumeConfig {
+impl From<*const RumeNewConfigC> for NewRumeConfig {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
-    fn from(val: *const NewRumeConfigC) -> Self {
+    fn from(val: *const RumeNewConfigC) -> Self {
         let default_app_name = "rume_app".to_string();
         if val.is_null() {
             return NewRumeConfig {
@@ -35,7 +36,7 @@ impl From<*const NewRumeConfigC> for NewRumeConfig {
     }
 }
 
-pub fn rume_new_impl(config: *const NewRumeConfigC) -> *mut RumeC {
+pub fn rume_new_impl(config: *const RumeNewConfigC) -> *mut RumeC {
     let new_opts: NewRumeConfig = config.into();
     let inner = Box::into_raw(Box::new(Rume::new(Some(new_opts)))) as *mut c_void;
     let rume_instance = RumeC { inner };
@@ -49,7 +50,7 @@ pub fn rume_free_impl(instance: *mut RumeC) {
     unsafe {
         let wrapper = Box::from_raw(instance);
         if !wrapper.inner.is_null() {
-            debug!("Freeing Rume instance");
+            info!("Freeing Rume instance");
             let _ = Box::from_raw(wrapper.inner as *mut Rume);
         }
     }
@@ -62,4 +63,27 @@ pub fn rume_init_impl(instance: *mut RumeC) -> i32 {
     };
 
     return_result_helper(rume_impl.init())
+}
+
+pub fn rume_handle_key_down_impl(instance: *mut RumeC, key_code: u16) -> RumeKeyEventResultC {
+    let rume_impl = match extract_rume_instance(instance) {
+        Some(r) => r,
+        _ => return RumeKeyEventResultC::Error,
+    };
+
+    let Some(key) = get_key_table_from_key_code(key_code) else {
+        info!("Unknown key for key_code: {}", key_code);
+        return RumeKeyEventResultC::NotHandled;
+    };
+
+    match rume_impl.handle_key_down(key) {
+        Ok(handled) => {
+            if handled {
+                RumeKeyEventResultC::Handled
+            } else {
+                RumeKeyEventResultC::NotHandled
+            }
+        }
+        Err(_) => RumeKeyEventResultC::Error,
+    }
 }

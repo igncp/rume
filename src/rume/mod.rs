@@ -1,8 +1,9 @@
 use tracing::{debug, info};
 
-use crate::rume::logger::setup_logs;
+use crate::rume::{key_table::RumeKeyTable, logger::setup_logs};
 
 pub mod config_handler;
+pub mod key_table;
 pub mod logger;
 pub mod version;
 
@@ -56,5 +57,12 @@ impl Rume {
         info!("Rume initialized");
 
         Ok(())
+    }
+
+    // true: event handled, false: not handled
+    pub fn handle_key_down(&self, key: RumeKeyTable) -> Result<bool, String> {
+        info!("Key down event received: key='{}'", key);
+
+        Ok(false)
     }
 }

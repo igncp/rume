@@ -2,7 +2,7 @@
 
 set -e
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")"/..
 
 clone_options=(
     # for GitHub pull request #1, git checkout 1/merge
@@ -18,8 +18,7 @@ if [[ "${1}" =~ run=.* ]]; then
     shift
 fi
 
-for plugin in "$@"
-do
+for plugin in "$@"; do
     if [[ "${plugin}" =~ @ ]]; then
         slug="${plugin%@*}"
         branch="${plugin#*@}"
@@ -29,8 +28,7 @@ do
     fi
     plugin_project="${slug##*/}"
     plugin_dir="plugins/${plugin_project#librime-}"
-    if [[ -d "${plugin_dir}" ]]
-    then
+    if [[ -d "${plugin_dir}" ]]; then
         echo "Updating ${plugin} in ${plugin_dir}"
         if [[ -n "${branch}" ]]; then
             git -C "${plugin_dir}" checkout "${branch}"
