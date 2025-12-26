@@ -32,14 +32,14 @@ extern const int STRING_SPLIT_BEHAVIOR_SKIP_TOKEN;
 
 /// # Safety
 /// This function is unsafe because it dereferences the `desc` pointer.
-int32_t rume_get_init_str(char **desc);
+int32_t rume_extension_get_init_str(char **desc);
 
 /// # Safety
 /// This function is unsafe because it dereferences the `test_param` pointer.
-char *rume_use_foo(Foo test_param);
+char *rume_extension_use_foo(Foo test_param);
 
 /// # Safety
 /// This function is unsafe because it dereferences the `str_ptr` and `delim_str` pointers.
-char **rume_strings_split(const char *str_ptr, const char *delim_str, int behavior_ptr);
+char **rume_extension_strings_split(const char *str_ptr, const char *delim_str, int behavior_ptr);
 
 }  // extern "C"

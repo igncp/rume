@@ -1,11 +1,11 @@
 [package]
-name = "rume"
+name = "rume_extension"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
 crate-type = ["staticlib"]
-name = "rume"
+name = "rume_extension"
 
 [profile.release]
 strip = true

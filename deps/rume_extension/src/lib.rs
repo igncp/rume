@@ -17,7 +17,7 @@ pub static STRING_SPLIT_BEHAVIOR_SKIP_TOKEN: libc::c_int = STRING_SPLIT_BEHAVIOR
 /// # Safety
 /// This function is unsafe because it dereferences the `desc` pointer.
 #[no_mangle]
-pub unsafe extern "C" fn rume_get_init_str(desc: *mut *mut c_char) -> i32 {
+pub unsafe extern "C" fn rume_extension_get_init_str(desc: *mut *mut c_char) -> i32 {
     rume_get_init_str_impl(desc)
 }
 
@@ -30,14 +30,14 @@ pub enum Foo {
 /// # Safety
 /// This function is unsafe because it dereferences the `test_param` pointer.
 #[no_mangle]
-pub unsafe extern "C" fn rume_use_foo(test_param: Foo) -> *mut c_char {
+pub unsafe extern "C" fn rume_extension_use_foo(test_param: Foo) -> *mut c_char {
     rume_use_foo_impl(test_param)
 }
 
 /// # Safety
 /// This function is unsafe because it dereferences the `str_ptr` and `delim_str` pointers.
 #[no_mangle]
-pub unsafe extern "C" fn rume_strings_split(
+pub unsafe extern "C" fn rume_extension_strings_split(
     str_ptr: *const c_char,
     delim_str: *const c_char,
     behavior_ptr: libc::c_int,

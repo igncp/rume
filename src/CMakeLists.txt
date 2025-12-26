@@ -43,10 +43,10 @@ if(ENABLE_EXTERNAL_PLUGINS)
   set(rime_optional_deps ${rime_optional_deps} dl)
 endif()
 
-find_library(Rume_LIBRARY NAMES rume)
+find_library(Rume_LIBRARY NAMES rume_extension)
 
 if(NOT Rume_LIBRARY)
-  message(FATAL_ERROR "Could not find the rume library")
+  message(FATAL_ERROR "Could not find the rume_extension library")
 endif()
 
 set(rime_core_deps

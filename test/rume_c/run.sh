@@ -6,12 +6,16 @@ if [ "$SKIP_SOURCE" != "1" ]; then
     . ../../../scripts/local_use_system_clang.sh
 fi
 
-echo "Compiling C test application 'rume_c'..."
+echo "Compiling C test application 'test_rume'..."
 
-clang main.c \
+astyle test_rume.c
+rm -f test_rume.c.orig
+
+clang test_rume.c \
     -L ../../target/release \
     -I ../../include \
     -lrume \
-    -o c_app
+    -o test_rume_c
 
-./c_app
+RUME_LOG_DIR=$PWD \
+    ./test_rume_c

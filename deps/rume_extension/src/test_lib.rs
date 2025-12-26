@@ -5,15 +5,15 @@ mod test {
     use libc::free;
 
     use crate::{
-        lib_impl::rume_strings_split_impl, rume_get_init_str, rume_use_foo, Foo,
-        STRING_SPLIT_BEHAVIOR_SKIP_TOKEN,
+        lib_impl::rume_strings_split_impl, rume_extension_get_init_str, rume_extension_use_foo,
+        Foo, STRING_SPLIT_BEHAVIOR_SKIP_TOKEN,
     };
 
     #[test]
     fn test_rume_get_init_str() {
         let mut init_str: *mut c_char = std::ptr::null_mut();
 
-        let return_val = unsafe { rume_get_init_str(&mut init_str) };
+        let return_val = unsafe { rume_extension_get_init_str(&mut init_str) };
 
         assert_eq!(return_val, 0);
         let result_str = unsafe { CStr::from_ptr(init_str) }.to_str().unwrap();
@@ -25,7 +25,7 @@ mod test {
 
     #[test]
     fn test_rume_use_foo() {
-        let str_ptr = unsafe { rume_use_foo(Foo::A([1.0; 2])) };
+        let str_ptr = unsafe { rume_extension_use_foo(Foo::A([1.0; 2])) };
 
         assert!(!str_ptr.is_null());
 

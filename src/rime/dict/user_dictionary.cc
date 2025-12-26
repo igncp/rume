@@ -20,7 +20,7 @@
 #include <rime/dict/table.h>
 #include <rime/dict/user_dictionary.h>
 #include <rime/dict/vocabulary.h>
-#include "rume.h"
+#include "rume_extension.h"
 
 namespace rime {
 
@@ -80,7 +80,7 @@ void DfsState::RecruitEntry(size_t pos,
       // TODO: free
       char* full_code_cstr = strdup(full_code.c_str());
       // TODO: free
-      auto syllables_raw = rume_strings_split(full_code_cstr, " ",
+      auto syllables_raw = rume_extension_strings_split(full_code_cstr, " ",
                                               STRING_SPLIT_BEHAVIOR_SKIP_TOKEN);
 
       vector<string> syllables;

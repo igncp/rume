@@ -9,7 +9,7 @@
 #include <rime/config.h>
 #include <rime/algo/encoder.h>
 #include <rime/algo/strings.h>
-#include "rume.h"
+#include "rume_extension.h"
 #include <iostream>
 using namespace std;
 
@@ -27,7 +27,7 @@ void RawCode::FromString(const string& code_str) {
 
   if (!code_str.empty()) {
     auto code_str_cstr = code_str.c_str();
-    auto codes_ptr = rume_strings_split(code_str_cstr, " ",
+    auto codes_ptr = rume_extension_strings_split(code_str_cstr, " ",
                                         STRING_SPLIT_BEHAVIOR_SKIP_TOKEN);
     if (codes_ptr) {
       while (*codes_ptr) {

@@ -14,7 +14,7 @@
 #include <rime/config/plugins.h>
 #include <rime/schema.h>
 
-#include "rume.h"
+#include "rume_extension.h"
 
 // Only required to call `free`
 #include <cstdlib>
@@ -24,7 +24,7 @@ using namespace rime;
 static void rime_core_initialize() {
   LOG(INFO) << "registering core components.";
   char *s = NULL;
-  rume_get_init_str(&s);
+  rume_extension_get_init_str(&s);
   LOG(INFO) << "get_some_cstr String = " << s;
   free(s);
   Registry& r = Registry::instance();

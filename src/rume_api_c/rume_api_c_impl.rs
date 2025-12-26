@@ -1,14 +1,20 @@
-use std::ffi::c_void;
+use std::ffi::{c_char, c_void};
 use tracing::debug;
 
 use super::RumeC;
 use crate::{
-    rume::Rume,
-    rume_api_c::utils::{extract_rume_instance, return_result_helper},
+    rume::{NewRumeConfig, Rume},
+    rume_api_c::utils::{c_char_to_str, extract_rume_instance, return_result_helper},
 };
 
-pub fn rume_new_impl() -> *mut RumeC {
-    let inner = Box::into_raw(Box::new(Rume::new(None))) as *mut c_void;
+pub fn rume_new_impl(log_dir_c: *const c_char) -> *mut RumeC {
+    let log_dir = c_char_to_str(log_dir_c).map(|s| s.to_string());
+    let new_opts = NewRumeConfig {
+        app_name: "RumeApp".to_string(),
+        min_log_level: None,
+        log_dir,
+    };
+    let inner = Box::into_raw(Box::new(Rume::new(Some(new_opts)))) as *mut c_void;
     let rume_instance = RumeC { inner };
     Box::into_raw(Box::new(rume_instance))
 }

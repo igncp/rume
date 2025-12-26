@@ -10,7 +10,7 @@ endif
 build ?= build
 prefix ?= $(rime_root)
 
-rime_deps = glog googletest leveldb marisa-trie opencc yaml-cpp rume
+rime_deps = glog googletest leveldb marisa-trie opencc yaml-cpp rume_extension
 
 .PHONY: all clean clean-dist clean-src $(rime_deps)
 
@@ -30,7 +30,7 @@ clean-src:
 	for dep in $(rime_deps); do \
 		rm -r $(src_dir)/$${dep}/$(build) || true; \
 	done \
-	&& rm -r $(src_dir)/rume/target || true
+	&& rm -r $(src_dir)/rume_extension/target || true
 
 glog:
 	cd $(src_dir)/glog; \
@@ -87,11 +87,11 @@ yaml-cpp:
 	-DCMAKE_INSTALL_PREFIX:PATH="$(prefix)" \
 	&& cmake --build $(build) --target install
 
-rume:
-	cd $(src_dir)/rume; \
+rume_extension:
+	cd $(src_dir)/rume_extension; \
 	cargo clippy --all-targets --all-features -- -D warnings && \
 	cargo test && \
 	cargo build --release && \
-	cp target/release/librume.a $(prefix)/lib/ && \
-	cbindgen --config cbindgen.toml --crate rume --output rume.h && \
-	cp rume.h $(prefix)/include/;
+	cp target/release/librume_extension.a $(prefix)/lib/ && \
+	cbindgen --config cbindgen.toml --crate rume_extension --output rume_extension.h && \
+	cp rume_extension.h $(prefix)/include/;

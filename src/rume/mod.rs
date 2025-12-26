@@ -9,6 +9,7 @@ pub mod version;
 pub struct NewRumeConfig {
     pub app_name: String,
     pub min_log_level: Option<u32>,
+    pub log_dir: Option<String>,
 }
 
 pub struct Rume {
@@ -30,8 +31,16 @@ impl Rume {
             return Ok(());
         }
         self.initialized = true;
-        setup_logs();
+
+        setup_logs(
+            self.rume_config
+                .as_ref()
+                .and_then(|config| config.log_dir.clone()),
+        );
+
         info!("Rume initializing...");
+        info!("Rume initialized");
+
         Ok(())
     }
 }

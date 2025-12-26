@@ -18,3 +18,11 @@ pub(super) fn extract_rume_instance(instance: *mut RumeC) -> Option<&'static mut
     let rume_impl: &mut Rume = unsafe { &mut *(instance_val.inner as *mut Rume) };
     Some(rume_impl)
 }
+
+pub(super) fn c_char_to_str(c_char_ptr: *const std::ffi::c_char) -> Option<&'static str> {
+    if c_char_ptr.is_null() {
+        return None;
+    }
+    let c_str = unsafe { std::ffi::CStr::from_ptr(c_char_ptr) };
+    c_str.to_str().ok()
+}
