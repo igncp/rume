@@ -72,6 +72,7 @@ librime-static:
 	cmake --build $(build)
 
 rust-code:
+	rm -rf target
 	cargo clippy --all-targets --all-features -- -D warnings
 	cargo test --release --all-targets
 	cargo build --release --all-targets

@@ -12,8 +12,7 @@ pub enum RumeDeployAction {
 pub fn rume_deploy(action: RumeDeployAction) -> Result<(), String> {
     let mut rume = Rume::new(Some(NewRumeConfig {
         app_name: "rume_deployer".to_string(),
-        log_dir: None,
-        min_log_level: Some(3),
+        ..Default::default()
     }));
 
     rume.init()?;

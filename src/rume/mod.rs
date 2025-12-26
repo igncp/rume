@@ -6,10 +6,23 @@ pub mod config_handler;
 pub mod logger;
 pub mod version;
 
+#[derive(Clone)]
 pub struct NewRumeConfig {
     pub app_name: String,
     pub min_log_level: Option<u32>,
     pub log_dir: Option<String>,
+    pub stdout_log: bool,
+}
+
+impl Default for NewRumeConfig {
+    fn default() -> Self {
+        Self {
+            app_name: "rume_unknown".to_string(),
+            min_log_level: None,
+            log_dir: None,
+            stdout_log: true,
+        }
+    }
 }
 
 pub struct Rume {
@@ -32,10 +45,11 @@ impl Rume {
         }
         self.initialized = true;
 
+        let rume_config = self.rume_config.clone().unwrap_or_default();
         setup_logs(
-            self.rume_config
-                .as_ref()
-                .and_then(|config| config.log_dir.clone()),
+            &rume_config.app_name,
+            rume_config.log_dir,
+            rume_config.stdout_log,
         );
 
         info!("Rume initializing...");
