@@ -1,7 +1,0 @@
-clang
--std=c++17
--stdlib=libc++
--Iinclude
--Isrc
--Isrc/rime
--Isrc/rime/algo

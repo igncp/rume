@@ -75,7 +75,7 @@ GitHub repository. You can checkout plugins (a list of slugs) with this command:
 
 ``` shell
 cd librime
-bash install-plugins.sh rime/librime-sample # ...
+bash scripts/install-plugins.sh rime/librime-sample # ...
 ```
 
 The cmake option `BUILD_MERGED_PLUGINS` merges all detected plugins into the

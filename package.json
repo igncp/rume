@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "version": "./bump-version.sh"
+    "version": "./scripts/bump-version.sh"
   },
   "repository": {
     "type": "git",

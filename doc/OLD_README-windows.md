@@ -37,7 +37,7 @@ If you have installed Boost libraries elsewhere, skip this step and set
 the environment varialble `BOOST_ROOT` to the installed path.
 
 ``` batch
-install-boost.bat
+scripts/install-boost.bat
 ```
 
 ## Build third-party libraries

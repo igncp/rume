@@ -37,7 +37,7 @@ These dependencies include a few header-only Boost libraries.
 
 ``` sh
 cd librime
-bash install-boost.sh
+bash scripts/install-boost.sh
 ```
 
 The make script will download Boost source tarball, extract it to

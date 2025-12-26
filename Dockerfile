@@ -18,7 +18,7 @@ RUN apt update && apt install -y \
 
 COPY / /librime
 WORKDIR /librime
-RUN bash install-plugins.sh \
+RUN bash scripts/install-plugins.sh \
   rime/librime-charcode \
   hchunhui/librime-lua \
   lotem/librime-octagram \
