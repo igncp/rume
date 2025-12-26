@@ -1,4 +1,6 @@
-use crate::rume::key_table::RumeKeyTable;
+use std::collections::HashSet;
+
+use crate::rume::key_table::{RumeKeyModifier, RumeKeyTable};
 
 pub fn get_key_table_from_key_code(key_code: u16) -> Option<RumeKeyTable> {
     match key_code {
@@ -44,4 +46,33 @@ pub fn get_key_table_from_key_code(key_code: u16) -> Option<RumeKeyTable> {
 
         _ => None,
     }
+}
+
+const BITMASK_PAIRS: &[(u32, RumeKeyModifier)] = &[
+    (1 << 0, RumeKeyModifier::Shift),
+    (1 << 1, RumeKeyModifier::Lock),
+    (1 << 2, RumeKeyModifier::Control),
+    (1 << 3, RumeKeyModifier::Mod1),
+    (1 << 4, RumeKeyModifier::Mod2),
+    (1 << 5, RumeKeyModifier::Mod3),
+    (1 << 6, RumeKeyModifier::Mod4),
+    (1 << 7, RumeKeyModifier::Mod5),
+    (1 << 8, RumeKeyModifier::Button1),
+    (1 << 9, RumeKeyModifier::Button2),
+    (1 << 10, RumeKeyModifier::Button3),
+    (1 << 11, RumeKeyModifier::Button4),
+    (1 << 12, RumeKeyModifier::Button5),
+];
+pub(super) fn extract_modifiers_from_flag(
+    flag: u32,
+) -> HashSet<crate::rume::key_table::RumeKeyModifier> {
+    let mut modifiers: HashSet<RumeKeyModifier> = std::collections::HashSet::new();
+
+    for (bitmask, modifier) in BITMASK_PAIRS.iter() {
+        if flag & bitmask != 0 {
+            modifiers.insert(modifier.clone());
+        }
+    }
+
+    modifiers
 }

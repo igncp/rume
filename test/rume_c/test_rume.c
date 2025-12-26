@@ -29,7 +29,7 @@ int main() {
         fprintf(stdout, "Rume instance initialized successfully\n");
     }
 
-    rume_handle_key_down(rume_instance, 42);
+    rume_handle_key_down(rume_instance, 0x11, 1<<3);
 
     rume_free(rume_instance);
 

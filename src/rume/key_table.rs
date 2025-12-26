@@ -55,6 +55,24 @@ pub enum RumeKeyTable {
     Underscore,
 }
 
+#[derive(Hash, Eq, PartialEq, Clone)]
+pub enum RumeKeyModifier {
+    Alt,
+    Button1,
+    Button2,
+    Button3,
+    Button4,
+    Button5,
+    Control,
+    Lock,
+    Mod1,
+    Mod2,
+    Mod3,
+    Mod4,
+    Mod5,
+    Shift,
+}
+
 impl Display for RumeKeyTable {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -110,6 +128,27 @@ impl Display for RumeKeyTable {
             RumeKeyTable::Space => write!(f, " "),
             RumeKeyTable::Tilde => write!(f, "~"),
             RumeKeyTable::Underscore => write!(f, "_"),
+        }
+    }
+}
+
+impl Display for RumeKeyModifier {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            RumeKeyModifier::Alt => write!(f, "Alt"),
+            RumeKeyModifier::Button1 => write!(f, "Button1"),
+            RumeKeyModifier::Button2 => write!(f, "Button2"),
+            RumeKeyModifier::Button3 => write!(f, "Button3"),
+            RumeKeyModifier::Button4 => write!(f, "Button4"),
+            RumeKeyModifier::Button5 => write!(f, "Button5"),
+            RumeKeyModifier::Control => write!(f, "Control"),
+            RumeKeyModifier::Lock => write!(f, "Lock"),
+            RumeKeyModifier::Mod1 => write!(f, "Mod1"),
+            RumeKeyModifier::Mod2 => write!(f, "Mod2"),
+            RumeKeyModifier::Mod3 => write!(f, "Mod3"),
+            RumeKeyModifier::Mod4 => write!(f, "Mod4"),
+            RumeKeyModifier::Mod5 => write!(f, "Mod5"),
+            RumeKeyModifier::Shift => write!(f, "Shift"),
         }
     }
 }

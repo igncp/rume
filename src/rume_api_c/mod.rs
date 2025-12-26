@@ -42,6 +42,10 @@ pub extern "C" fn rume_init(instance: *mut RumeC) -> i32 {
 }
 
 #[no_mangle]
-pub extern "C" fn rume_handle_key_down(instance: *mut RumeC, key_code: u16) -> RumeKeyEventResultC {
-    rume_handle_key_down_impl(instance, key_code)
+pub extern "C" fn rume_handle_key_down(
+    instance: *mut RumeC,
+    key_code: u16,
+    modifier_flag: u32,
+) -> RumeKeyEventResultC {
+    rume_handle_key_down_impl(instance, key_code, modifier_flag)
 }

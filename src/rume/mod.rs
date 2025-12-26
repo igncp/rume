@@ -1,6 +1,11 @@
+use std::collections::HashSet;
+
 use tracing::{debug, info};
 
-use crate::rume::{key_table::RumeKeyTable, logger::setup_logs};
+use crate::rume::{
+    key_table::{RumeKeyModifier, RumeKeyTable},
+    logger::setup_logs,
+};
 
 pub mod config_handler;
 pub mod key_table;
@@ -60,8 +65,17 @@ impl Rume {
     }
 
     // true: event handled, false: not handled
-    pub fn handle_key_down(&self, key: RumeKeyTable) -> Result<bool, String> {
-        info!("Key down event received: key='{}'", key);
+    pub fn handle_key_down(
+        &self,
+        key: RumeKeyTable,
+        modifiers: HashSet<RumeKeyModifier>,
+    ) -> Result<bool, String> {
+        let modifiers_str = modifiers
+            .iter()
+            .map(|m| format!("{m}"))
+            .collect::<Vec<String>>()
+            .join(", ");
+        info!("Key down event received: key='{key}' with modifiers='{modifiers_str}'");
 
         Ok(false)
     }
