@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-// Include the generated header file
 #include "rume_api.h"
 
 int main() {
@@ -29,12 +28,12 @@ int main() {
         fprintf(stdout, "Rume instance initialized successfully\n");
     }
 
-    if (rume_process_key(rume_instance, 0x11, 1<<3) == RumeKERHandled) {
-        fprintf(stdout, "Key event handled\n");
-    } else {
-        fprintf(stdout, "Key event not handled\n");
-    }
+    RumeSessionIdC session_id = rume_create_session(rume_instance);
 
+    rume_process_key(rume_instance, session_id, 11, 1<<3);
+    rume_process_key(rume_instance, session_id, 12, 1<<3);
+
+    rume_delete_session(rume_instance, session_id);
     rume_free(rume_instance);
 
     return rv;

@@ -2,10 +2,6 @@
 
 set -e
 
-if [ "$SKIP_SOURCE" != "1" ]; then
-    . ../../../scripts/local_use_system_clang.sh
-fi
-
 echo "Compiling C test application 'test_rume'..."
 
 astyle test_rume.c

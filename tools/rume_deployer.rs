@@ -2,7 +2,7 @@ use std::{env, io::Read};
 
 use rume::rume::{
     config_handler::{ApplyPatchOpts, ConfigHandler},
-    NewRumeConfig, Rume,
+    RumeNewConfig, Rume,
 };
 
 pub enum RumeDeployAction {
@@ -10,7 +10,7 @@ pub enum RumeDeployAction {
 }
 
 pub fn rume_deploy(action: RumeDeployAction) -> Result<(), String> {
-    let mut rume = Rume::new(Some(NewRumeConfig {
+    let mut rume = Rume::new(Some(RumeNewConfig {
         app_name: "rume_deployer".to_string(),
         ..Default::default()
     }));

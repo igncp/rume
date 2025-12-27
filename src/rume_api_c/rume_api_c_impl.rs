@@ -3,20 +3,20 @@ use tracing::info;
 
 use super::RumeC;
 use crate::{
-    rume::{NewRumeConfig, Rume},
+    rume::{session::RumeSessionId, Rume, RumeNewConfig},
     rume_api_c::{
         key_code_to_key_table::{extract_modifiers_from_flag, get_key_table_from_key_code},
         utils::{c_char_to_str, extract_rume_instance, return_result_helper},
-        RumeKeyEventResultC, RumeNewConfigC,
+        RumeKeyEventResultC, RumeNewConfigC, RumeSessionIdC,
     },
 };
 
-impl From<*const RumeNewConfigC> for NewRumeConfig {
+impl From<*const RumeNewConfigC> for RumeNewConfig {
     #[allow(clippy::not_unsafe_ptr_arg_deref)]
     fn from(val: *const RumeNewConfigC) -> Self {
         let default_app_name = "rume_app".to_string();
         if val.is_null() {
-            return NewRumeConfig {
+            return RumeNewConfig {
                 app_name: default_app_name,
                 min_log_level: None,
                 log_dir: None,
@@ -25,7 +25,7 @@ impl From<*const RumeNewConfigC> for NewRumeConfig {
         }
         let config_ref = unsafe { &*val };
 
-        NewRumeConfig {
+        RumeNewConfig {
             app_name: c_char_to_str(config_ref.app_name)
                 .unwrap_or(&default_app_name)
                 .to_string(),
@@ -37,7 +37,7 @@ impl From<*const RumeNewConfigC> for NewRumeConfig {
 }
 
 pub fn rume_new_impl(config: *const RumeNewConfigC) -> *mut RumeC {
-    let new_opts: NewRumeConfig = config.into();
+    let new_opts: RumeNewConfig = config.into();
     let inner = Box::into_raw(Box::new(Rume::new(Some(new_opts)))) as *mut c_void;
     let rume_instance = RumeC { inner };
     Box::into_raw(Box::new(rume_instance))
@@ -57,9 +57,8 @@ pub fn rume_free_impl(instance: *mut RumeC) {
 }
 
 pub fn rume_init_impl(instance: *mut RumeC) -> i32 {
-    let rume_impl = match extract_rume_instance(instance) {
-        Some(r) => r,
-        _ => return -1,
+    let Some(rume_impl) = extract_rume_instance(instance) else {
+        return -1;
     };
 
     return_result_helper(rume_impl.init())
@@ -67,12 +66,12 @@ pub fn rume_init_impl(instance: *mut RumeC) -> i32 {
 
 pub fn rume_process_key_impl(
     instance: *mut RumeC,
+    session_id: RumeSessionIdC,
     key_code: u16,
     modifiers_flag: u32,
 ) -> RumeKeyEventResultC {
-    let rume_impl = match extract_rume_instance(instance) {
-        Some(r) => r,
-        _ => return RumeKeyEventResultC::RumeKERError,
+    let Some(rume_impl) = extract_rume_instance(instance) else {
+        return RumeKeyEventResultC::RumeKERError;
     };
 
     let Some(key) = get_key_table_from_key_code(key_code) else {
@@ -82,7 +81,7 @@ pub fn rume_process_key_impl(
 
     let modifiers = extract_modifiers_from_flag(modifiers_flag);
 
-    match rume_impl.handle_key_down(key, modifiers) {
+    match rume_impl.process_key(session_id as RumeSessionId, key, modifiers) {
         Ok(handled) => {
             if handled {
                 RumeKeyEventResultC::RumeKERHandled
@@ -92,4 +91,20 @@ pub fn rume_process_key_impl(
         }
         Err(_) => RumeKeyEventResultC::RumeKERError,
     }
+}
+
+pub fn rume_create_session_impl(instance: *mut RumeC) -> RumeSessionIdC {
+    let Some(rume_impl) = extract_rume_instance(instance) else {
+        return 0;
+    };
+
+    rume_impl.create_session() as RumeSessionIdC
+}
+
+pub fn rume_delete_session_impl(instance: *mut RumeC, session_id: RumeSessionIdC) {
+    let Some(rume_impl) = extract_rume_instance(instance) else {
+        return;
+    };
+
+    rume_impl.delete_session(session_id as RumeSessionId);
 }
