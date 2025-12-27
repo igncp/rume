@@ -29,7 +29,11 @@ int main() {
         fprintf(stdout, "Rume instance initialized successfully\n");
     }
 
-    rume_handle_key_down(rume_instance, 0x11, 1<<3);
+    if (rume_process_key(rume_instance, 0x11, 1<<3) == RumeKERHandled) {
+        fprintf(stdout, "Key event handled\n");
+    } else {
+        fprintf(stdout, "Key event not handled\n");
+    }
 
     rume_free(rume_instance);
 

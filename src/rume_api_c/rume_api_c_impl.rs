@@ -65,19 +65,19 @@ pub fn rume_init_impl(instance: *mut RumeC) -> i32 {
     return_result_helper(rume_impl.init())
 }
 
-pub fn rume_handle_key_down_impl(
+pub fn rume_process_key_impl(
     instance: *mut RumeC,
     key_code: u16,
     modifiers_flag: u32,
 ) -> RumeKeyEventResultC {
     let rume_impl = match extract_rume_instance(instance) {
         Some(r) => r,
-        _ => return RumeKeyEventResultC::Error,
+        _ => return RumeKeyEventResultC::RumeKERError,
     };
 
     let Some(key) = get_key_table_from_key_code(key_code) else {
         info!("Unknown key for key_code: {}", key_code);
-        return RumeKeyEventResultC::NotHandled;
+        return RumeKeyEventResultC::RumeKERNotHandled;
     };
 
     let modifiers = extract_modifiers_from_flag(modifiers_flag);
@@ -85,11 +85,11 @@ pub fn rume_handle_key_down_impl(
     match rume_impl.handle_key_down(key, modifiers) {
         Ok(handled) => {
             if handled {
-                RumeKeyEventResultC::Handled
+                RumeKeyEventResultC::RumeKERHandled
             } else {
-                RumeKeyEventResultC::NotHandled
+                RumeKeyEventResultC::RumeKERNotHandled
             }
         }
-        Err(_) => RumeKeyEventResultC::Error,
+        Err(_) => RumeKeyEventResultC::RumeKERError,
     }
 }

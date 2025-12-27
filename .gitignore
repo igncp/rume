@@ -4,6 +4,7 @@ debug/
 dist/
 data/*
 include/*
+!include/rume_api.h
 lib/*
 bin/*
 share/*

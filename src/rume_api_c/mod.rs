@@ -1,7 +1,6 @@
 use std::ffi::{c_char, c_void};
 
-use crate::rume_api_c::rume_api_c_impl::rume_handle_key_down_impl;
-use rume_api_c_impl::{rume_free_impl, rume_init_impl, rume_new_impl};
+use rume_api_c_impl::{rume_free_impl, rume_init_impl, rume_new_impl,rume_process_key_impl};
 
 mod key_code_to_key_table;
 mod rume_api_c_impl;
@@ -21,9 +20,9 @@ pub struct RumeNewConfigC {
 
 #[repr(C)]
 pub enum RumeKeyEventResultC {
-    Handled = 0,
-    NotHandled,
-    Error,
+    RumeKERHandled,
+    RumeKERNotHandled,
+    RumeKERError,
 }
 
 #[no_mangle]
@@ -42,10 +41,10 @@ pub extern "C" fn rume_init(instance: *mut RumeC) -> i32 {
 }
 
 #[no_mangle]
-pub extern "C" fn rume_handle_key_down(
+pub extern "C" fn rume_process_key(
     instance: *mut RumeC,
     key_code: u16,
     modifier_flag: u32,
 ) -> RumeKeyEventResultC {
-    rume_handle_key_down_impl(instance, key_code, modifier_flag)
+    rume_process_key_impl(instance, key_code, modifier_flag)
 }
