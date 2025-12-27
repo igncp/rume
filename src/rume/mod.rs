@@ -3,10 +3,10 @@ use std::collections::{HashMap, HashSet};
 use tracing::{debug, info};
 
 use crate::rume::{
-    engine::Engine,
+    engine::{Engine, KeyProcessResult},
     key_table::{RumeKeyModifier, RumeKeyTable},
     logger::setup_logs,
-    session::{RumeSession, RumeSessionId},
+    session::{RumeContext, RumeMenu, RumeSession, RumeSessionId},
 };
 
 pub mod config_handler;
@@ -85,9 +85,20 @@ impl Rume {
             return Err(err_msg);
         };
 
-        session.commited_text.push_str(&key.to_string());
-
-        session.engine.process_key(session, key, &modifiers)
+        let Ok(handling_result) = session.engine.process_key(session, key, &modifiers) else {
+            return Ok(false);
+        };
+        match handling_result {
+            KeyProcessResult::Handled {
+                preedit_text,
+                commited_text,
+            } => {
+                session.context.preedit_text = preedit_text;
+                session.commited_text = commited_text;
+                Ok(true)
+            }
+            KeyProcessResult::NotHandled => Ok(false),
+        }
     }
 
     pub fn create_session(&mut self) -> RumeSessionId {
@@ -95,10 +106,14 @@ impl Rume {
         let engine = Engine {
             session_id: self.last_session_id,
         };
+        let menu = RumeMenu { num_candidates: 5 };
+        let preedit_text = String::new();
+        let context = RumeContext { menu, preedit_text };
         let session = RumeSession {
             id: self.last_session_id,
             engine,
             commited_text: String::new(),
+            context,
         };
         self.sessions.insert(session.id, session);
         info!("Created session with id={}", self.last_session_id);
@@ -108,5 +123,25 @@ impl Rume {
     pub fn delete_session(&mut self, session_id: RumeSessionId) {
         info!("Deleting session with id={}", session_id);
         self.sessions.remove(&session_id);
+    }
+
+    pub fn get_commit(&self, session_id: RumeSessionId) -> Option<String> {
+        let Some(session) = self.sessions.get(&session_id) else {
+            let err_msg = format!("Session id={} not found", session_id);
+            info!("{}", err_msg);
+            return None;
+        };
+
+        if session.commited_text.is_empty() {
+            return None;
+        }
+
+        let commit_text = session.commited_text.clone();
+
+        Some(commit_text)
+    }
+
+    pub fn get_session(&self, session_id: RumeSessionId) -> Option<&RumeSession> {
+        self.sessions.get(&session_id)
     }
 }

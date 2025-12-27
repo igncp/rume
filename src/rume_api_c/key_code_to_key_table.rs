@@ -70,10 +70,8 @@ const BITMASK_PAIRS: &[(u32, RumeKeyModifier)] = &[
     (1 << 11, RumeKeyModifier::Button4),
     (1 << 12, RumeKeyModifier::Button5),
 ];
-pub(super) fn extract_modifiers_from_flag(
-    flag: u32,
-) -> HashSet<crate::rume::key_table::RumeKeyModifier> {
-    let mut modifiers: HashSet<RumeKeyModifier> = std::collections::HashSet::new();
+pub(super) fn extract_modifiers_from_flag(flag: u32) -> HashSet<RumeKeyModifier> {
+    let mut modifiers: HashSet<RumeKeyModifier> = HashSet::new();
 
     for (bitmask, modifier) in BITMASK_PAIRS.iter() {
         if flag & bitmask != 0 {

@@ -1,12 +1,13 @@
-use std::ffi::c_void;
+use std::ffi::{c_void, CString};
 use tracing::info;
 
 use super::RumeC;
 use crate::{
-    rume::{session::RumeSessionId, Rume, RumeNewConfig},
+    rume::{Rume, RumeNewConfig},
     rume_api_c::{
+        base::{RumeContextC, RumeMenuC},
         key_code_to_key_table::{extract_modifiers_from_flag, get_key_table_from_key_code},
-        utils::{c_char_to_str, extract_rume_instance, return_result_helper},
+        utils::{c_char_to_str, extract_rume_instance, get_session_id, return_result_helper},
         RumeKeyEventResultC, RumeNewConfigC, RumeSessionIdC,
     },
 };
@@ -86,7 +87,7 @@ pub fn rume_process_key_impl(
 
     let modifiers = extract_modifiers_from_flag(modifiers_flag);
 
-    match rume_impl.process_key(session_id as RumeSessionId, key, modifiers) {
+    match rume_impl.process_key(get_session_id(session_id), key, modifiers) {
         Ok(handled) => {
             if handled {
                 RumeKeyEventResultC::RumeKERHandled
@@ -111,5 +112,43 @@ pub fn rume_delete_session_impl(instance: *mut RumeC, session_id: RumeSessionIdC
         return;
     };
 
-    rume_impl.delete_session(session_id as RumeSessionId);
+    rume_impl.delete_session(get_session_id(session_id));
+}
+
+pub fn rume_get_context_impl(
+    instance: *mut RumeC,
+    session_id: RumeSessionIdC,
+) -> *const RumeContextC {
+    let Some(rume_impl) = extract_rume_instance(instance) else {
+        return std::ptr::null();
+    };
+    rume_impl
+        .get_session(get_session_id(session_id))
+        .map_or_else(std::ptr::null, |session| {
+            let menu = RumeMenuC {
+                num_candidates: session.context.menu.num_candidates as u32,
+            };
+            let preedit_text = CString::new(session.context.preedit_text.clone())
+                .unwrap()
+                .into_raw();
+            let committed_text = CString::new(session.commited_text.clone())
+                .unwrap()
+                .into_raw();
+            let context = RumeContextC {
+                menu,
+                preedit_text,
+                committed_text,
+            };
+
+            Box::into_raw(Box::new(context))
+        })
+}
+
+pub fn rume_free_context_impl(context: *const RumeContextC) {
+    if context.is_null() {
+        return;
+    }
+    unsafe {
+        let _ = Box::from_raw(context as *mut RumeContextC);
+    }
 }

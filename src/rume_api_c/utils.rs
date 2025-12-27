@@ -1,4 +1,7 @@
-use crate::{rume::Rume, rume_api_c::RumeC};
+use crate::{
+    rume::{session::RumeSessionId, Rume},
+    rume_api_c::{base::RumeSessionIdC, RumeC},
+};
 
 pub(super) fn return_result_helper<T, E>(result: Result<T, E>) -> i32 {
     match result {
@@ -25,4 +28,8 @@ pub(super) fn c_char_to_str(c_char_ptr: *const std::ffi::c_char) -> Option<&'sta
     }
     let c_str = unsafe { std::ffi::CStr::from_ptr(c_char_ptr) };
     c_str.to_str().ok()
+}
+
+pub(super) fn get_session_id(session_id_c: RumeSessionIdC) -> RumeSessionId {
+    session_id_c as RumeSessionId
 }

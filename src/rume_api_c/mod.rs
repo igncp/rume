@@ -1,33 +1,17 @@
-use std::ffi::{c_char, c_void};
-
 use rume_api_c_impl::{rume_free_impl, rume_init_impl, rume_new_impl, rume_process_key_impl};
 
-use crate::rume_api_c::rume_api_c_impl::{rume_create_session_impl, rume_delete_session_impl};
+use crate::rume_api_c::{
+    base::{RumeC, RumeContextC, RumeKeyEventResultC, RumeNewConfigC, RumeSessionIdC},
+    rume_api_c_impl::{
+        rume_create_session_impl, rume_delete_session_impl, rume_free_context_impl,
+        rume_get_context_impl,
+    },
+};
 
+mod base;
 mod key_code_to_key_table;
 mod rume_api_c_impl;
 mod utils;
-
-#[repr(C)]
-pub struct RumeC {
-    inner: *mut c_void,
-}
-
-#[repr(C)]
-pub struct RumeNewConfigC {
-    pub app_name: *const c_char,
-    pub log_dir: *const c_char,
-    pub stdout_log: bool,
-}
-
-#[repr(C)]
-pub enum RumeKeyEventResultC {
-    RumeKERHandled,
-    RumeKERNotHandled,
-    RumeKERError,
-}
-
-pub type RumeSessionIdC = u32;
 
 #[no_mangle]
 pub extern "C" fn rume_new(config: *const RumeNewConfigC) -> *mut RumeC {
@@ -62,4 +46,17 @@ pub extern "C" fn rume_process_key(
     modifier_flag: u32,
 ) -> RumeKeyEventResultC {
     rume_process_key_impl(instance, session_id, key_code, modifier_flag)
+}
+
+#[no_mangle]
+pub extern "C" fn rume_get_context(
+    instance: *mut RumeC,
+    session_id: RumeSessionIdC,
+) -> *const RumeContextC {
+    rume_get_context_impl(instance, session_id)
+}
+
+#[no_mangle]
+pub extern "C" fn rume_free_context(context: *const RumeContextC) {
+    rume_free_context_impl(context)
 }

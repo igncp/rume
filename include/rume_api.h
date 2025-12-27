@@ -21,6 +21,16 @@ typedef struct RumeNewConfigC {
 
 typedef uint32_t RumeSessionIdC;
 
+typedef struct RumeMenuC {
+    uint32_t num_candidates;
+} RumeMenuC;
+
+typedef struct RumeContextC {
+    struct RumeMenuC menu;
+    const char *preedit_text;
+    const char *committed_text;
+} RumeContextC;
+
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
@@ -39,6 +49,10 @@ enum RumeKeyEventResultC rume_process_key(struct RumeC *instance,
         RumeSessionIdC session_id,
         uint16_t key_code,
         uint32_t modifier_flag);
+
+const struct RumeContextC *rume_get_context(struct RumeC *instance, RumeSessionIdC session_id);
+
+void rume_free_context(const struct RumeContextC *context);
 
 #ifdef __cplusplus
 }  // extern "C"
