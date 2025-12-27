@@ -79,6 +79,11 @@ pub fn rume_process_key_impl(
         return RumeKeyEventResultC::RumeKERNotHandled;
     };
 
+    info!(
+        "Processing key event: session_id='{}' key_code='{}' key='{}'",
+        session_id, key_code, key
+    );
+
     let modifiers = extract_modifiers_from_flag(modifiers_flag);
 
     match rume_impl.process_key(session_id as RumeSessionId, key, modifiers) {
