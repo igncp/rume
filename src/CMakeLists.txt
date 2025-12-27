@@ -43,7 +43,15 @@ if(ENABLE_EXTERNAL_PLUGINS)
   set(rime_optional_deps ${rime_optional_deps} dl)
 endif()
 
-find_library(Rume_LIBRARY NAMES rume_extension)
+# Try to locate the Rust extension library built by deps.mk.
+# Search common locations including the install prefix and local dist.
+set(_RUME_EXTENSION_HINT_DIRS
+  "${CMAKE_INSTALL_PREFIX}/lib"
+  "${PROJECT_SOURCE_DIR}/dist/lib"
+  "${PROJECT_SOURCE_DIR}/lib"
+  "${PROJECT_BINARY_DIR}/lib"
+)
+find_library(Rume_LIBRARY NAMES rume_extension HINTS ${_RUME_EXTENSION_HINT_DIRS})
 
 if(NOT Rume_LIBRARY)
   message(FATAL_ERROR "Could not find the rume_extension library")

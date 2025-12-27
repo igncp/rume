@@ -10,7 +10,7 @@ endif
 build ?= build
 prefix ?= $(rime_root)
 
-rime_deps = glog googletest leveldb marisa-trie opencc yaml-cpp rume_extension
+rime_deps = rume_extension
 
 .PHONY: all clean clean-dist clean-src $(rime_deps)
 
@@ -32,66 +32,14 @@ clean-src:
 	done \
 	&& rm -r $(src_dir)/rume_extension/target || true
 
-glog:
-	cd $(src_dir)/glog; \
-	cmake . -B$(build) \
-	-DBUILD_SHARED_LIBS:BOOL=OFF \
-	-DBUILD_TESTING:BOOL=OFF \
-	-DWITH_GFLAGS:BOOL=OFF \
-	-DCMAKE_BUILD_TYPE:STRING="Release" \
-	-DCMAKE_INSTALL_PREFIX:PATH="$(prefix)" \
-	&& cmake --build $(build) --target install
-
-googletest:
-	cd $(src_dir)/googletest; \
-	cmake . -B$(build) \
-	-DBUILD_GMOCK:BOOL=OFF \
-	-DCMAKE_BUILD_TYPE:STRING="Release" \
-	-DCMAKE_INSTALL_PREFIX:PATH="$(prefix)" \
-	&& cmake --build $(build) --target install
-
-leveldb:
-	cd $(src_dir)/leveldb; \
-	cmake . -B$(build) \
-	-DLEVELDB_BUILD_BENCHMARKS:BOOL=OFF \
-	-DLEVELDB_BUILD_TESTS:BOOL=OFF \
-	-DCMAKE_BUILD_TYPE:STRING="Release" \
-	-DCMAKE_INSTALL_PREFIX:PATH="$(prefix)" \
-	&& cmake --build $(build) --target install
-
-marisa-trie:
-	cd $(src_dir)/marisa-trie; \
-	cmake . -B$(build) \
-	-DCMAKE_BUILD_TYPE:STRING="Release" \
-	-DCMAKE_INSTALL_PREFIX:PATH="$(prefix)" \
-	-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON \
-	-DBUILD_TESTING:BOOL=OFF \
-	-DENABLE_TOOLS:BOOL=OFF \
-	&& cmake --build $(build) --target install
-
-opencc:
-	cd $(src_dir)/opencc; \
-	cmake . -B$(build) \
-	-DBUILD_SHARED_LIBS:BOOL=OFF \
-	-DCMAKE_BUILD_TYPE:STRING="Release" \
-	-DCMAKE_INSTALL_PREFIX:PATH="$(prefix)" \
-	&& cmake --build $(build) --target install
-
-yaml-cpp:
-	cd $(src_dir)/yaml-cpp; \
-	cmake . -B$(build) \
-	-DYAML_CPP_BUILD_CONTRIB:BOOL=OFF \
-	-DYAML_CPP_BUILD_TESTS:BOOL=OFF \
-	-DYAML_CPP_BUILD_TOOLS:BOOL=OFF \
-	-DCMAKE_BUILD_TYPE:STRING="Release" \
-	-DCMAKE_INSTALL_PREFIX:PATH="$(prefix)" \
-	&& cmake --build $(build) --target install
 
 rume_extension:
+	mkdir -p $(prefix)/lib $(prefix)/include
 	cd $(src_dir)/rume_extension; \
 	cargo clippy --all-targets --all-features -- -D warnings && \
 	cargo test && \
 	cargo build --release && \
 	cp target/release/librume_extension.a $(prefix)/lib/ && \
 	cbindgen --config cbindgen.toml --crate rume_extension --output rume_extension.h && \
+	astyle -n rume_extension.h && \
 	cp rume_extension.h $(prefix)/include/;

@@ -4,8 +4,7 @@ set -e
 
 echo "Compiling C test application 'test_rume'..."
 
-astyle test_rume.c
-rm -f test_rume.c.orig
+astyle -n test_rume.c
 
 clang test_rume.c \
     -L ../../target/release \

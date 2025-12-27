@@ -79,7 +79,7 @@ rust-code:
 	cargo build --release --all-targets
 	cbindgen --config cbindgen.rume_api.toml --crate rume --output rume_api.h && \
 		mv rume_api.h include
-	astyle include/rume_api.h
+	astyle -n include/rume_api.h
 	(cd test/rume_c && bash run.sh)
 
 release: rust-code
