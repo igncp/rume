@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+#[derive(Hash, Eq, PartialEq, Clone)]
 pub enum RumeKeyTable {
     ArrowDown,
     ArrowLeft,

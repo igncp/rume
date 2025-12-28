@@ -41,6 +41,7 @@ pub fn get_key_table_from_key_code(key_code: u16) -> Option<RumeKeyTable> {
         28 => Some(RumeKeyTable::Number8),
         25 => Some(RumeKeyTable::Number9),
         29 => Some(RumeKeyTable::Number0),
+        24 => Some(RumeKeyTable::Equal),
         0x31 => Some(RumeKeyTable::Space),
         36 => Some(RumeKeyTable::Enter),
         51 => Some(RumeKeyTable::Backspace),

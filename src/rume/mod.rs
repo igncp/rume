@@ -40,6 +40,7 @@ pub struct Rume {
     initialized: bool,
     sessions: HashMap<RumeSessionId, RumeSession>,
     last_session_id: RumeSessionId,
+    is_enabled: bool,
 }
 
 impl Rume {
@@ -49,6 +50,7 @@ impl Rume {
             initialized: false,
             sessions: HashMap::new(),
             last_session_id: 0,
+            is_enabled: true,
         }
     }
 
@@ -79,6 +81,15 @@ impl Rume {
         key: RumeKeyTable,
         modifiers: HashSet<RumeKeyModifier>,
     ) -> Result<bool, String> {
+        if key == RumeKeyTable::Equal && modifiers.contains(&RumeKeyModifier::Control) {
+            self.is_enabled = !self.is_enabled;
+            info!("Rume enabled set to {}", self.is_enabled);
+        }
+
+        if !self.is_enabled {
+            return Ok(false);
+        }
+
         let Some(session) = self.sessions.get_mut(&session_id) else {
             let err_msg = format!("Session id={} not found", session_id);
             info!("{}", err_msg);

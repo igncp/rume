@@ -52,12 +52,6 @@ clang-format-lint:
 clang-format-apply:
 	find ${RIME_SOURCE_PATH} \! -path 'plugins/*/*' -a \( -name '*.cc' -o -name '*.h' \) | xargs clang-format --verbose -i
 
-deps:
-	$(MAKE) -f deps.mk
-
-deps/%:
-	$(MAKE) -f deps.mk $(@:deps/%=%)
-
 clean:
 	rm -r $(build) || true
 
@@ -71,7 +65,7 @@ librime-static:
 	-DBUILD_SHARED_LIBS=OFF
 	cmake --build $(build)
 
-rust-code:
+librume:
 	rm -rf target
 	cargo clippy --all-targets --all-features -- -D warnings
 	cargo test --release --all-targets
@@ -80,7 +74,7 @@ rust-code:
 		mv rume_api.h include
 	(cd test/rume_c && bash run.sh)
 
-release: rust-code
+release:
 	cmake . -B$(build) \
 	-DCMAKE_INSTALL_PREFIX=$(prefix) \
 	-DCMAKE_BUILD_TYPE=Release \
@@ -122,3 +116,6 @@ test: release
 
 test-debug: debug
 	(cd $(build); ctest --output-on-failure)
+
+deps:
+	$(MAKE) -C deps/rume_extension rume-extension
