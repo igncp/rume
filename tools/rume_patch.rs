@@ -15,6 +15,8 @@ pub fn rume_patch(
 ) -> Result<(), String> {
     let mut rume = Rume::new(Some(RumeNewConfig {
         app_name: "rume_patch".to_string(),
+        // Suppress logs during tests without needing env vars.
+        stdout_log: !cfg!(test),
         ..Default::default()
     }));
 

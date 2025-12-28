@@ -30,8 +30,13 @@ int main() {
 
     RumeSessionIdC session_id = rume_create_session(rume_instance);
 
-    rume_process_key(rume_instance, session_id, 11, 1<<3);
-    rume_process_key(rume_instance, session_id, 12, 1<<3);
+    RumeKeyEventResultC process_result = rume_process_key(rume_instance, session_id, 11, 1<<3);
+    if (process_result != RumeKERHandled)
+        fprintf(stderr, "Failed to process key event (1)\n");
+
+    process_result = rume_process_key(rume_instance, session_id, 12, 1<<3);
+    if (process_result != RumeKERHandled)
+        fprintf(stderr, "Failed to process key event (2)\n");
 
     const RumeContextC* context = rume_get_context(rume_instance, session_id);
     if (context != NULL) {

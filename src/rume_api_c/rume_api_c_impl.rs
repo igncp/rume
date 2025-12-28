@@ -88,13 +88,7 @@ pub fn rume_process_key_impl(
     let modifiers = extract_modifiers_from_flag(modifiers_flag);
 
     match rume_impl.process_key(get_session_id(session_id), key, modifiers) {
-        Ok(handled) => {
-            if handled {
-                RumeKeyEventResultC::RumeKERHandled
-            } else {
-                RumeKeyEventResultC::RumeKERNotHandled
-            }
-        }
+        Ok(handled) => handled.into(),
         Err(_) => RumeKeyEventResultC::RumeKERError,
     }
 }

@@ -10,6 +10,23 @@
 #include <rime_api.h>
 #include <rime/common.h>
 
+// Simple overview:
+// DictCompiler takes human-readable schema/dictionary sources and produces
+// fast, load-ready binary artifacts for runtime.
+//
+// - Prism: a compact spelling index (double-array trie) that maps
+//   pronunciations/syllables to internal IDs and helps segment input. Saved
+//   as a `.prism.bin` file.
+// - Table: the forward dictionary that maps codes/sequences to entries
+//   (characters/phrases with weights). Saved as a `.table.bin` file.
+// - ReverseDb (optional): reverse lookup data (characters → pronunciation),
+//   saved as `.reverse.bin`.
+//
+// DictCompiler coordinates building these structures and calls their Save()
+// methods to write fixed-layout binary images. Rebuilds are decided via
+// checksums so startup can just memory-map these `.bin` files without
+// reprocessing the sources.
+
 namespace rime {
 
 class Dictionary;

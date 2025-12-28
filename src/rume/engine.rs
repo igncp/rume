@@ -11,7 +11,16 @@ pub struct Engine {
     pub(super) session_id: RumeSessionId,
 }
 
-pub enum KeyProcessResult {
+// These could be handled in the future to navigate the preedit
+/// cbindgen:ignore
+const SKIP_KEYS: &[RumeKeyTable] = &[
+    RumeKeyTable::ArrowDown,
+    RumeKeyTable::ArrowLeft,
+    RumeKeyTable::ArrowRight,
+    RumeKeyTable::ArrowUp,
+];
+
+pub enum EngineProcessKeyResult {
     Handled {
         preedit_text: String,
         commited_text: String,
@@ -25,7 +34,13 @@ impl Engine {
         session: &RumeSession,
         key: RumeKeyTable,
         modifiers: &HashSet<RumeKeyModifier>,
-    ) -> Result<KeyProcessResult, String> {
+    ) -> Result<EngineProcessKeyResult, String> {
+        if SKIP_KEYS.contains(&key)
+            || key == RumeKeyTable::Enter && session.context.preedit_text.is_empty()
+        {
+            return Ok(EngineProcessKeyResult::NotHandled);
+        }
+
         let modifiers_str = modifiers
             .iter()
             .map(|m| format!("{m}"))
@@ -52,7 +67,7 @@ impl Engine {
 
         info!("Key down event received: session_id='{session_id}' key='{key}' with modifiers='{modifiers_str}', preedit_text='{preedit_text}', commited_text='{commited_text}'");
 
-        Ok(KeyProcessResult::Handled {
+        Ok(EngineProcessKeyResult::Handled {
             preedit_text,
             commited_text,
         })

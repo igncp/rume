@@ -3,12 +3,13 @@ use std::collections::{HashMap, HashSet};
 use tracing::{debug, info};
 
 use crate::rume::{
-    engine::{Engine, KeyProcessResult},
+    engine::{Engine, EngineProcessKeyResult},
     key_table::{RumeKeyModifier, RumeKeyTable},
     logger::setup_logs,
     session::{RumeContext, RumeMenu, RumeSession, RumeSessionId},
 };
 
+pub mod bin_parser;
 pub mod config_handler;
 pub mod engine;
 pub mod key_table;
@@ -33,6 +34,13 @@ impl Default for RumeNewConfig {
             stdout_log: true,
         }
     }
+}
+
+pub enum ProcessKeyResult {
+    Handled,
+    Enabled,
+    Disabled,
+    NotHandled,
 }
 
 pub struct Rume {
@@ -74,20 +82,25 @@ impl Rume {
         Ok(())
     }
 
-    // true: event handled, false: not handled
     pub fn process_key(
         &mut self,
         session_id: RumeSessionId,
         key: RumeKeyTable,
         modifiers: HashSet<RumeKeyModifier>,
-    ) -> Result<bool, String> {
+    ) -> Result<ProcessKeyResult, String> {
         if key == RumeKeyTable::Equal && modifiers.contains(&RumeKeyModifier::Control) {
             self.is_enabled = !self.is_enabled;
             info!("Rume enabled set to {}", self.is_enabled);
+
+            return Ok(if self.is_enabled {
+                ProcessKeyResult::Enabled
+            } else {
+                ProcessKeyResult::Disabled
+            });
         }
 
         if !self.is_enabled {
-            return Ok(false);
+            return Ok(ProcessKeyResult::NotHandled);
         }
 
         let Some(session) = self.sessions.get_mut(&session_id) else {
@@ -97,18 +110,25 @@ impl Rume {
         };
 
         let Ok(handling_result) = session.engine.process_key(session, key, &modifiers) else {
-            return Ok(false);
+            return Ok(ProcessKeyResult::NotHandled);
         };
+
         match handling_result {
-            KeyProcessResult::Handled {
+            EngineProcessKeyResult::Handled {
                 preedit_text,
                 commited_text,
             } => {
                 session.context.preedit_text = preedit_text;
+                // Hide candidates when there is no preedit text
+                session.context.menu.num_candidates = if session.context.preedit_text.is_empty() {
+                    0
+                } else {
+                    5
+                };
                 session.commited_text = commited_text;
-                Ok(true)
+                Ok(ProcessKeyResult::Handled)
             }
-            KeyProcessResult::NotHandled => Ok(false),
+            EngineProcessKeyResult::NotHandled => Ok(ProcessKeyResult::NotHandled),
         }
     }
 
@@ -117,7 +137,8 @@ impl Rume {
         let engine = Engine {
             session_id: self.last_session_id,
         };
-        let menu = RumeMenu { num_candidates: 5 };
+        // Start with zero candidates until there is preedit text
+        let menu = RumeMenu { num_candidates: 0 };
         let preedit_text = String::new();
         let context = RumeContext { menu, preedit_text };
         let session = RumeSession {

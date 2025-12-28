@@ -1,5 +1,7 @@
 use std::ffi::{c_char, c_void};
 
+use crate::rume::ProcessKeyResult;
+
 #[repr(C)]
 pub struct RumeC {
     pub(super) inner: *mut c_void,
@@ -16,6 +18,8 @@ pub struct RumeNewConfigC {
 #[repr(C)]
 pub enum RumeKeyEventResultC {
     RumeKERHandled,
+    RumeKEREnabled,
+    RumeKERDisabled,
     RumeKERNotHandled,
     RumeKERError,
 }
@@ -32,4 +36,15 @@ pub struct RumeContextC {
     pub menu: RumeMenuC,
     pub preedit_text: *const c_char,
     pub committed_text: *const c_char,
+}
+
+impl From<ProcessKeyResult> for RumeKeyEventResultC {
+    fn from(val: ProcessKeyResult) -> Self {
+        match val {
+            ProcessKeyResult::Handled => RumeKeyEventResultC::RumeKERHandled,
+            ProcessKeyResult::Enabled => RumeKeyEventResultC::RumeKEREnabled,
+            ProcessKeyResult::Disabled => RumeKeyEventResultC::RumeKERDisabled,
+            ProcessKeyResult::NotHandled => RumeKeyEventResultC::RumeKERNotHandled,
+        }
+    }
 }

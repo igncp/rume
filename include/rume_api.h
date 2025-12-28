@@ -5,6 +5,8 @@
 
 typedef enum RumeKeyEventResultC {
     RumeKERHandled,
+    RumeKEREnabled,
+    RumeKERDisabled,
     RumeKERNotHandled,
     RumeKERError,
 } RumeKeyEventResultC;

@@ -56,6 +56,7 @@ pub fn get_key_table_from_key_code(key_code: u16) -> Option<RumeKeyTable> {
     }
 }
 
+/// cbindgen:ignore
 const BITMASK_PAIRS: &[(u32, RumeKeyModifier)] = &[
     (1 << 0, RumeKeyModifier::Shift),
     (1 << 1, RumeKeyModifier::Lock),

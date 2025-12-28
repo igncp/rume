@@ -5,12 +5,24 @@ use tracing::{info, Level};
 use tracing_subscriber::fmt::writer::{BoxMakeWriter, MakeWriterExt};
 use tracing_subscriber::FmtSubscriber;
 
+/// cbindgen:ignore
 pub const ENV_LOGGER_LEVEL: &str = "RUME_LOGGER_LEVEL";
 
 pub fn setup_logs(app_name: &str, log_dir: Option<String>, stdout_log: bool) {
-    let logger_level = std::env::var(ENV_LOGGER_LEVEL).unwrap_or("".to_string());
+    // Auto-disable logs under tests: unit (cfg(test)) and integration (env set by test harness).
+    if cfg!(test) || std::env::var("RUST_TEST_THREADS").is_ok() {
+        return;
+    }
 
-    let logger_level = match logger_level.as_str() {
+    let logger_level_str = std::env::var(ENV_LOGGER_LEVEL).unwrap_or("".to_string());
+
+    // Allow disabling logs entirely, useful for `cargo test`.
+    // Usage: `RUME_LOGGER_LEVEL=off cargo test`
+    if matches!(logger_level_str.as_str(), "off" | "none" | "silent") {
+        return;
+    }
+
+    let logger_level = match logger_level_str.as_str() {
         "trace" => Level::TRACE,
         "debug" => Level::DEBUG,
         "warn" => Level::WARN,

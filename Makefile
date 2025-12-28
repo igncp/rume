@@ -41,7 +41,8 @@ build ?= build
 .PHONY: all deps clean \
 librime librime-static \
 release debug test install uninstall \
-install-debug uninstall-debug
+install-debug uninstall-debug \
+headers
 
 all: release
 
@@ -71,8 +72,26 @@ librume:
 	cargo test --release --all-targets
 	cargo build --release --all-targets
 	cbindgen --config cbindgen.rume_api.toml --crate rume --output rume_api.h && \
-		mv rume_api.h include
+		mv rume_api.h include && \
+		astyle -n include/rume_api.h
+	$(MAKE) headers
 	(cd test/rume_c && bash run.sh)
+
+headers:
+	@echo "Checking cbindgen headers for drift..."
+	@TMPFILE=$$(mktemp -t rume_api.XXXXXX.h); \
+	cbindgen --config cbindgen.rume_api.toml --crate rume --output $$TMPFILE; \
+	astyle -n $$TMPFILE; \
+	if diff -u include/rume_api.h $$TMPFILE >/dev/null; then \
+		echo "Headers are in sync."; \
+		rm -f $$TMPFILE; \
+	else \
+		echo "Header drift detected between include/rume_api.h and cbindgen output."; \
+		echo "Run 'make librume' to regenerate, or commit the updated header if intentional."; \
+		diff -u include/rume_api.h $$TMPFILE || true; \
+		rm -f $$TMPFILE; \
+		false; \
+	fi
 
 release:
 	cmake . -B$(build) \
