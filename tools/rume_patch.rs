@@ -1,7 +1,8 @@
 use std::{env, io::Read};
 
 use rume::rume::{
-    Rume, RumeNewConfig, config_handler::{ApplyPatchOpts, ConfigCurrentTime, ConfigHandler}
+    config_handler::{ApplyPatchOpts, ConfigCurrentTime, ConfigHandler},
+    Rume, RumeNewConfig,
 };
 
 mod test_rume_patch;

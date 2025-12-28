@@ -41,5 +41,4 @@ rume_extension:
 	cargo build --release && \
 	cp target/release/librume_extension.a $(prefix)/lib/ && \
 	cbindgen --config cbindgen.toml --crate rume_extension --output rume_extension.h && \
-	astyle -n rume_extension.h && \
 	cp rume_extension.h $(prefix)/include/;

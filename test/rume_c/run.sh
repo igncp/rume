@@ -4,8 +4,6 @@ set -e
 
 echo "Compiling C test application 'test_rume'..."
 
-astyle -n test_rume.c
-
 clang test_rume.c \
     -L ../../target/release \
     -I ../../include \

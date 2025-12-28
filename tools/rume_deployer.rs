@@ -2,7 +2,7 @@ use std::{env, io::Read};
 
 use rume::rume::{
     config_handler::{ApplyPatchOpts, ConfigHandler},
-    RumeNewConfig, Rume,
+    Rume, RumeNewConfig,
 };
 
 pub enum RumeDeployAction {

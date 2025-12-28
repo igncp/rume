@@ -1,8 +1,8 @@
 #!/bin/bash
 
 if [[ -z "${1}" ]]; then
-  echo "Usage: $(basename "$0") <plugin-name>"
-  exit 1
+    echo "Usage: $(basename "$0") <plugin-name>"
+    exit 1
 fi
 
 plugin_name="${1/_/-}"
@@ -16,7 +16,7 @@ echo "plugin_module: ${plugin_module}"
 
 mkdir -p "${plugin_dir}"
 
-cat >> "${plugin_dir}/CMakeLists.txt" << //EOF
+cat >>"${plugin_dir}/CMakeLists.txt" <<//EOF
 project(rime-${plugin_name})
 cmake_minimum_required(VERSION 3.10)
 
@@ -37,7 +37,7 @@ set(plugin_modules "${plugin_module}" PARENT_SCOPE)
 
 mkdir -p "${plugin_dir}/src"
 
-cat >> "${plugin_dir}/src/${plugin_module}_module.cc" << //EOF
+cat >>"${plugin_dir}/src/${plugin_module}_module.cc" <<//EOF
 #include <rime/component.h>
 #include <rime/registry.h>
 #include <rime_api.h>
@@ -57,7 +57,7 @@ static void rime_${plugin_module}_finalize() {
 RIME_REGISTER_MODULE(${plugin_module})
 //EOF
 
-cat >> "${plugin_dir}/src/todo_processor.h" << //EOF
+cat >>"${plugin_dir}/src/todo_processor.h" <<//EOF
 #include <rime/common.h>
 #include <rime/context.h>
 #include <rime/engine.h>

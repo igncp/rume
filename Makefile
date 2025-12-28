@@ -73,13 +73,11 @@ librime-static:
 
 rust-code:
 	rm -rf target
-	find src -name '*.rs' | xargs rustfmt;
 	cargo clippy --all-targets --all-features -- -D warnings
 	cargo test --release --all-targets
 	cargo build --release --all-targets
 	cbindgen --config cbindgen.rume_api.toml --crate rume --output rume_api.h && \
 		mv rume_api.h include
-	astyle -n include/rume_api.h
 	(cd test/rume_c && bash run.sh)
 
 release: rust-code

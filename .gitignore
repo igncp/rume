@@ -5,6 +5,7 @@ dist/
 data/*
 include/*
 !include/rume_api.h
+!include/rume_extension.h
 lib/*
 bin/*
 share/*
