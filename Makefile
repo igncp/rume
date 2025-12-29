@@ -70,6 +70,9 @@ librume:
 	rm -rf target
 	cargo clippy --all-targets --all-features -- -D warnings
 	cargo test --release --all-targets
+	if [ -f ".git" ]; then \
+		export RUME_COMMIT_HASH=$$(git rev-parse HEAD); \
+	fi; \
 	cargo build --release --all-targets
 	cbindgen --config cbindgen.rume_api.toml --crate rume --output rume_api.h && \
 		mv rume_api.h include && \

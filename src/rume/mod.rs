@@ -7,6 +7,7 @@ use crate::rume::{
     key_table::{RumeKeyModifier, RumeKeyTable},
     logger::setup_logs,
     session::{RumeContext, RumeMenu, RumeSession, RumeSessionId},
+    version::{RUME_COMMIT_HASH, RUME_VERSION},
 };
 
 pub mod bin_parser;
@@ -76,7 +77,10 @@ impl Rume {
             rume_config.stdout_log,
         );
 
-        info!("Rume initializing...");
+        info!(
+            "Rume initializing... Version: {RUME_VERSION}, Commit: {}",
+            RUME_COMMIT_HASH.get(..8).unwrap_or(RUME_COMMIT_HASH)
+        );
         info!("Rume initialized");
 
         Ok(())

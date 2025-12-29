@@ -5,6 +5,9 @@
 #include "rume_api.h"
 
 int main() {
+    fprintf(stdout, "[c-test] rume_version(): %s\n", rume_version());
+    fprintf(stdout, "[c-test] rume_commit_hash(): %s\n", rume_commit_hash());
+
     char* log_dir = getenv("RUME_LOG_DIR");
     struct RumeNewConfigC config = {
         .app_name = "test_rume",
@@ -14,7 +17,7 @@ int main() {
     RumeC* rume_instance = rume_new(&config);
 
     if (rume_instance == NULL) {
-        fprintf(stderr, "Failed to create Rume instance\n");
+        fprintf(stderr, "[c-test] Failed to create Rume instance\n");
         return 1;
     }
 
@@ -22,28 +25,28 @@ int main() {
     int rv = 0;
 
     if (init_result != 0) {
-        fprintf(stderr, "Failed to initialize Rume instance\n");
+        fprintf(stderr, "[c-test] Failed to initialize Rume instance\n");
         rv = 1;
     } else {
-        fprintf(stdout, "Rume instance initialized successfully\n");
+        fprintf(stdout, "[c-test] Rume instance initialized successfully\n");
     }
 
     RumeSessionIdC session_id = rume_create_session(rume_instance);
 
     RumeKeyEventResultC process_result = rume_process_key(rume_instance, session_id, 11, 1<<3);
     if (process_result != RumeKERHandled)
-        fprintf(stderr, "Failed to process key event (1)\n");
+        fprintf(stderr, "[c-test] Failed to process key event (1)\n");
 
     process_result = rume_process_key(rume_instance, session_id, 12, 1<<3);
     if (process_result != RumeKERHandled)
-        fprintf(stderr, "Failed to process key event (2)\n");
+        fprintf(stderr, "[c-test] Failed to process key event (2)\n");
 
     const RumeContextC* context = rume_get_context(rume_instance, session_id);
     if (context != NULL) {
-        fprintf(stdout, "Context info: num_candidates:%u, committed_text: '%s', preedit_text: '%s'\n", context->menu.num_candidates, context->committed_text, context->preedit_text);
+        fprintf(stdout, "[c-test] Context info: num_candidates:%u, committed_text: '%s', preedit_text: '%s'\n", context->menu.num_candidates, context->committed_text, context->preedit_text);
         rume_free_context(context);
     } else {
-        fprintf(stderr, "No context available\n");
+        fprintf(stderr, "[c-test] No context available\n");
     }
 
     rume_delete_session(rume_instance, session_id);

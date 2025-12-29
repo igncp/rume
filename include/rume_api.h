@@ -56,6 +56,10 @@ const struct RumeContextC *rume_get_context(struct RumeC *instance, RumeSessionI
 
 void rume_free_context(const struct RumeContextC *context);
 
+const char *rume_version(void);
+
+const char *rume_commit_hash(void);
+
 #ifdef __cplusplus
 }  // extern "C"
 #endif  // __cplusplus
