@@ -120,14 +120,36 @@ int main(int argc, char* argv[]) {
   std::cerr << "ready." << std::endl;
 
   RimeConsole console;
-  // "-i" turns on interactive mode (no commit at the end of line)
+  // "-i" turns on interactive mode.
+  //
+  // In non-interactive mode (default), each input line is parsed as a key
+  // sequence and then committed at end-of-line; committed text is printed to
+  // stdout via OnCommit().
+  //
+  // In interactive mode (-i), rime_console does NOT auto-commit at end-of-line.
+  // Instead it prints debug information about the current composition/menu,
+  // which is useful to inspect the engine state when feeding key sequences.
+  // Typical output looks like:
+  //
+  //   input  : [nihao]
+  //   comp.  : [{abc}nihao=>你好]
+  //   page_no: 0, index: 0
+  //   cand. 1: [你好]  quality=...
+  //   cand. 2: [妳好]  quality=...
+  //
+  // Where:
+  // - input: raw input string in the Context.
+  // - comp.: Composition::GetDebugText(); it includes the current segment tag
+  //   (e.g. {abc}), the preedit spelling, and the preview text after "=>".
+  // - page_no/index: current candidate page number and the selected_index of
+  //   the current segment.
+  // - cand.*: candidates on the current page, with their model "quality" score.
   bool interactive = argc > 1 && !strcmp(argv[1], "-i");
   console.set_interactive(interactive);
 
   // process input
   string line;
-  while (std::cin) {
-    std::getline(std::cin, line);
+  while (std::getline(std::cin, line)) {
     console.ProcessLine(line);
   }
   SetConsoleOutputCodePage(codepage);

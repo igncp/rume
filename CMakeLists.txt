@@ -27,6 +27,8 @@ option(ENABLE_EXTERNAL_PLUGINS "Enable loading of externally built Rime plugins 
 option(ENABLE_THREADING "Enable threading for deployer" ON)
 option(ENABLE_TIMESTAMP "Embed timestamp to schema artifacts" ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(_USE_SYSTEM_YAML_CPP_DEFAULT ON)
 if(DEFINED ENV{USE_SYSTEM_YAML_CPP})
   if("$ENV{USE_SYSTEM_YAML_CPP}" STREQUAL "0" OR "$ENV{USE_SYSTEM_YAML_CPP}" STREQUAL "OFF")
